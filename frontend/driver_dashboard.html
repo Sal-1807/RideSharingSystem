@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard – RideShare</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
+    <ul class="nav-links">
+        <li><a href="driver_dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="support_ticket.html">🎫 Support</a></li>
+    </ul>
+    <div class="nav-user">
+        <span id="nav-user-name"></span>
+        <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-title">🚖 Driver Dashboard</div>
+    <div class="page-subtitle">Welcome back, <span id="driver-name">Driver</span>! Manage your rides from here.</div>
+
+    <div id="alert-box" class="alert"></div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number" id="stat-trips">—</div><div class="stat-label">Total Trips</div></div>
+        <div class="stat-card success"><div class="stat-number" id="stat-earnings">₹—</div><div class="stat-label">Total Earnings</div></div>
+        <div class="stat-card warning"><div class="stat-number" id="stat-rating">—</div><div class="stat-label">Avg Rating</div></div>
+        <div class="stat-card info"><div class="stat-number" id="stat-pending">—</div><div class="stat-label">Pending Requests</div></div>
+    </div>
+
+    <div class="grid-2">
+
+        <!-- Pending Ride Requests -->
+        <div class="card">
+            <div class="card-title flex-between">
+                <span>📍 Pending Ride Requests</span>
+                <button onclick="loadPendingRides()" class="btn btn-info btn-sm">🔄 Refresh</button>
+            </div>
+            <div id="pending-rides">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </div>
+
+        <!-- Active Trip (if any) -->
+        <div>
+            <div class="card" id="active-trip-card">
+                <div class="card-title">🚗 Active Trip</div>
+                <div id="active-trip">
+                    <div class="empty-state">
+                        <div class="icon">🚖</div>
+                        <p>No active trip. Accept a ride request to start.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Earnings Summary -->
+            <div class="card">
+                <div class="card-title">💰 Earnings Summary</div>
+                <div id="earnings-summary">
+                    <div class="loading"><div class="spinner"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trip History -->
+    <div class="card">
+        <div class="card-title">📋 My Trip History</div>
+        <div class="table-wrapper" id="trip-history">
+            <div class="loading"><div class="spinner"></div></div>
+        </div>
+    </div>
+
+    <!-- Ratings Received -->
+    <div class="card">
+        <div class="card-title">⭐ Ratings Received</div>
+        <div id="ratings-section">
+            <div class="loading"><div class="spinner"></div></div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <strong>RideShare</strong> · 21CSC205P DBMS Mini Project
+</footer>
+
+<script src="js/api.js"></script>
+<script>
+    const user = requireAuth(['driver']);
+    let activeTripId = null;
+
+    if (user) {
+        document.getElementById('driver-name').textContent = user.name;
+        populateNav(user);
+        loadDashboard();
+    }
+
+    async function loadDashboard() {
+        await Promise.all([
+            loadPendingRides(),
+            loadEarnings(),
+            loadTrips(),
+            loadRatings()
+        ]);
+    }
+
+    async function loadPendingRides() {
+        try {
+            const rides = await API.driver.pendingRides();
+            document.getElementById('stat-pending').textContent = rides.length;
+            const container = document.getElementById('pending-rides');
+
+            if (!rides.length) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">📍</div><p>No pending ride requests.</p></div>';
+                return;
+            }
+
+            container.innerHTML = rides.map(r => `
+                <div class="ride-card">
+                    <div class="ride-info">
+                        <strong>👤 ${r.Passenger_Name} · ${r.Passenger_Phone}</strong>
+                        <small>📍 From: ${r.Pickup_Address}, ${r.Pickup_City}</small>
+                        <small>🏁 To: ${r.Drop_Address}, ${r.Drop_City}</small>
+                        <small class="text-muted">${formatDate(r.Request_Time)}</small>
+                    </div>
+                    <button onclick="acceptRide(${r.Request_ID})" class="btn btn-success btn-sm">
+                        ✅ Accept
+                    </button>
+                </div>
+            `).join('');
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function acceptRide(requestId) {
+        try {
+            const data = await API.driver.acceptRide({
+                driver_id:  user.id,
+                request_id: requestId
+            });
+            showAlert(data.message, 'success');
+            activeTripId = data.trip_id;
+            showActiveTrip(data.trip_id);
+            loadPendingRides();
+            loadTrips();
+        } catch (err) {
+            showAlert(err.message, 'error');
+        }
+    }
+
+    function showActiveTrip(tripId) {
+        document.getElementById('active-trip').innerHTML = `
+            <div style="background:var(--light);padding:16px;border-radius:8px;">
+                <div class="flex-between mb-16">
+                    <strong>Trip #${tripId}</strong>
+                    <span class="badge badge-info">Accepted</span>
+                </div>
+                <div class="form-group">
+                    <label>Enter Distance (km) when ending:</label>
+                    <input type="number" id="trip-distance" placeholder="e.g. 8.5" min="0.1" step="0.1" value="5">
+                </div>
+                <div class="flex gap-8">
+                    <button onclick="startTrip(${tripId})" class="btn btn-info" id="start-btn">▶️ Start Trip</button>
+                    <button onclick="endTrip(${tripId})"   class="btn btn-success" id="end-btn">🏁 End Trip</button>
+                </div>
+            </div>
+        `;
+    }
+
+    async function startTrip(tripId) {
+        try {
+            await API.driver.startTrip(tripId);
+            showAlert('Trip started!', 'success');
+            loadTrips();
+        } catch (err) {
+            showAlert(err.message, 'error');
+        }
+    }
+
+    async function endTrip(tripId) {
+        const dist = document.getElementById('trip-distance').value;
+        if (!dist || dist <= 0) return showAlert('Enter a valid distance', 'error');
+
+        try {
+            const data = await API.driver.endTrip(tripId, dist);
+            showAlert(data.message, 'success');
+            activeTripId = null;
+
+            // Show fare in active trip area
+            document.getElementById('active-trip').innerHTML = `
+                <div class="alert alert-success">
+                    ✅ Trip ended! Fare: <strong>₹${data.fare}</strong> · Distance: ${data.distance} km
+                    <br>Passenger can now make payment and rate you.
+                </div>
+            `;
+            loadEarnings();
+            loadTrips();
+        } catch (err) {
+            showAlert(err.message, 'error');
+        }
+    }
+
+    async function loadEarnings() {
+        try {
+            const e = await API.driver.earnings(user.id);
+            document.getElementById('stat-trips').textContent    = e.Total_Trips || 0;
+            document.getElementById('stat-earnings').textContent = e.Total_Earnings ? '₹' + parseFloat(e.Total_Earnings).toFixed(2) : '₹0';
+
+            document.getElementById('earnings-summary').innerHTML = `
+                <div class="flex-between mb-8">
+                    <span class="text-muted">Total Trips</span>
+                    <strong>${e.Total_Trips || 0}</strong>
+                </div>
+                <div class="flex-between mb-8">
+                    <span class="text-muted">Total Earnings</span>
+                    <strong style="color:var(--success)">₹${parseFloat(e.Total_Earnings || 0).toFixed(2)}</strong>
+                </div>
+                <div class="flex-between mb-8">
+                    <span class="text-muted">Average Fare</span>
+                    <strong>₹${parseFloat(e.Avg_Fare || 0).toFixed(2)}</strong>
+                </div>
+                <div class="flex-between">
+                    <span class="text-muted">Max Fare</span>
+                    <strong>₹${parseFloat(e.Max_Fare || 0).toFixed(2)}</strong>
+                </div>
+            `;
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function loadTrips() {
+        try {
+            const trips = await API.driver.trips(user.id);
+            const container = document.getElementById('trip-history');
+
+            if (!trips.length) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">🚗</div><p>No trips yet.</p></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>Passenger</th><th>Route</th><th>Distance</th><th>Fare</th><th>Date</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        ${trips.map(t => `
+                            <tr>
+                                <td>${t.Trip_ID}</td>
+                                <td>${t.Passenger_Name}</td>
+                                <td>${t.Pickup_Address} → ${t.Drop_Address}</td>
+                                <td>${t.Distance || '—'} km</td>
+                                <td>${t.Fare ? '₹' + t.Fare : '—'}</td>
+                                <td>${formatDate(t.Start_Time)}</td>
+                                <td>${statusBadge(t.Status)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function loadRatings() {
+        try {
+            const { ratings, average_rating } = await API.driver.ratings(user.id);
+            document.getElementById('stat-rating').textContent = average_rating || '—';
+            const container = document.getElementById('ratings-section');
+
+            if (!ratings.length) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">⭐</div><p>No ratings yet.</p></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <p class="text-muted mb-16">Average Rating: <strong>${average_rating} / 5</strong></p>
+                ${ratings.map(r => `
+                    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;">
+                        <div class="flex-between">
+                            <strong>${r.Passenger_Name}</strong>
+                            <span style="color:#f39c12;font-size:1.2rem">${'⭐'.repeat(r.Driver_Rating)}</span>
+                        </div>
+                        ${r.Comments ? `<p class="text-muted mt-8" style="font-size:0.88rem">"${r.Comments}"</p>` : ''}
+                    </div>
+                `).join('')}
+            `;
+        } catch (err) {
+            console.error(err);
+        }
+    }
+</script>
+</body>
+</html>

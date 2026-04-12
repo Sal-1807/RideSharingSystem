@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passenger Dashboard – RideShare</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
+    <ul class="nav-links">
+        <li><a href="passenger_dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="request_ride.html">📍 Book Ride</a></li>
+        <li><a href="trip_history.html">📋 Trips</a></li>
+        <li><a href="payment.html">💳 Payments</a></li>
+        <li><a href="rating.html">⭐ Rate</a></li>
+        <li><a href="support_ticket.html">🎫 Support</a></li>
+    </ul>
+    <div class="nav-user">
+        <span id="nav-user-name"></span>
+        <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-title">👋 Welcome, <span id="user-name">Passenger</span>!</div>
+    <div class="page-subtitle">Manage your rides, payments and wallet from here.</div>
+
+    <div id="alert-box" class="alert"></div>
+
+    <!-- Stats Row -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number" id="stat-trips">—</div>
+            <div class="stat-label">Total Trips</div>
+        </div>
+        <div class="stat-card success">
+            <div class="stat-number" id="stat-wallet">₹—</div>
+            <div class="stat-label">Wallet Balance</div>
+        </div>
+        <div class="stat-card accent">
+            <div class="stat-number" id="stat-pending">—</div>
+            <div class="stat-label">Pending Requests</div>
+        </div>
+        <div class="stat-card info">
+            <div class="stat-number" id="stat-tickets">—</div>
+            <div class="stat-label">Support Tickets</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-title">⚡ Quick Actions</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <a href="request_ride.html"  class="btn btn-primary">📍 Book a Ride</a>
+                <a href="trip_history.html"  class="btn btn-info">📋 View Trip History</a>
+                <a href="payment.html"       class="btn btn-success">💳 Make Payment</a>
+                <a href="rating.html"        class="btn btn-warning">⭐ Rate a Driver</a>
+                <a href="support_ticket.html" class="btn btn-accent">🎫 Raise Support Ticket</a>
+            </div>
+        </div>
+
+        <!-- Wallet & Promo Codes -->
+        <div>
+            <div class="wallet-widget">
+                <div class="balance">₹<span id="wallet-balance">—</span></div>
+                <div class="label">Wallet Balance · Tap to top up</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🎁 Active Promo Codes</div>
+                <div id="promo-list">
+                    <div class="loading"><div class="spinner"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Ride Requests -->
+    <div class="card">
+        <div class="card-title">🚗 Recent Ride Requests</div>
+        <div class="table-wrapper" id="rides-section">
+            <div class="loading"><div class="spinner"></div></div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <strong>RideShare</strong> · 21CSC205P DBMS Mini Project · SRM Institute of Science and Technology
+</footer>
+
+<script src="js/api.js"></script>
+<script>
+    const user = requireAuth(['passenger']);
+    if (user) {
+        document.getElementById('user-name').textContent = user.name;
+        populateNav(user);
+        loadDashboard();
+    }
+
+    async function loadDashboard() {
+        try {
+            // Load wallet
+            const wallet = await API.passenger.wallet(user.id);
+            const bal = parseFloat(wallet.Balance).toFixed(2);
+            document.getElementById('stat-wallet').textContent  = `₹${bal}`;
+            document.getElementById('wallet-balance').textContent = bal;
+
+            // Load ride requests
+            const rides = await API.passenger.rides(user.id);
+            const pending = rides.filter(r => r.Status === 'Pending').length;
+            document.getElementById('stat-pending').textContent = pending;
+
+            renderRides(rides.slice(0, 5));  // show latest 5
+
+            // Load trips count
+            const trips = await API.passenger.trips(user.id);
+            document.getElementById('stat-trips').textContent = trips.length;
+
+            // Load tickets count
+            const tickets = await API.passenger.tickets(user.id);
+            document.getElementById('stat-tickets').textContent = tickets.length;
+
+            // Load promo codes
+            const promos = await API.passenger.promos();
+            renderPromos(promos);
+
+        } catch (err) {
+            showAlert('Error loading dashboard: ' + err.message, 'error');
+        }
+    }
+
+    function renderRides(rides) {
+        const container = document.getElementById('rides-section');
+        if (!rides.length) {
+            container.innerHTML = '<div class="empty-state"><div class="icon">🚗</div><p>No ride requests yet. <a href="request_ride.html">Book your first ride!</a></p></div>';
+            return;
+        }
+        container.innerHTML = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rides.map(r => `
+                        <tr>
+                            <td>${r.Request_ID}</td>
+                            <td>${r.Pickup_Address}, ${r.Pickup_City}</td>
+                            <td>${r.Drop_Address}, ${r.Drop_City}</td>
+                            <td>${formatDate(r.Request_Time)}</td>
+                            <td>${statusBadge(r.Status)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+
+    function renderPromos(promos) {
+        const container = document.getElementById('promo-list');
+        if (!promos.length) {
+            container.innerHTML = '<p class="text-muted">No active promo codes.</p>';
+            return;
+        }
+        container.innerHTML = promos.map(p => `
+            <div class="flex-between mb-16">
+                <div>
+                    <strong style="color:var(--success);font-size:1rem">${p.Code}</strong>
+                    <div class="text-muted">${p.Discount_Percentage}% off · Expires ${p.Expiry_Date}</div>
+                </div>
+                <span class="badge badge-success">${p.Discount_Percentage}%</span>
+            </div>
+        `).join('');
+    }
+</script>
+</body>
+</html>

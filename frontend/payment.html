@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment – RideShare</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
+    <ul class="nav-links">
+        <li><a href="passenger_dashboard.html">Dashboard</a></li>
+        <li><a href="trip_history.html">📋 Trips</a></li>
+        <li><a href="payment.html" class="active">💳 Payments</a></li>
+    </ul>
+    <div class="nav-user">
+        <span id="nav-user-name"></span>
+        <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-title">💳 Payment</div>
+    <div class="page-subtitle">Complete your payment for the trip.</div>
+
+    <div id="alert-box" class="alert"></div>
+
+    <div class="grid-2">
+
+        <!-- Payment Form -->
+        <div class="card" id="payment-section">
+            <div class="card-title">💰 Trip Payment</div>
+
+            <!-- Fare Summary -->
+            <div style="background:var(--light);padding:16px;border-radius:8px;margin-bottom:20px;">
+                <div class="flex-between mb-8">
+                    <span class="text-muted">Trip ID</span>
+                    <strong id="disp-trip">#—</strong>
+                </div>
+                <div class="flex-between mb-8">
+                    <span class="text-muted">Driver</span>
+                    <strong id="disp-driver">—</strong>
+                </div>
+                <div class="flex-between mb-8">
+                    <span class="text-muted">Fare</span>
+                    <strong id="disp-fare" style="color:var(--success);font-size:1.2rem">₹—</strong>
+                </div>
+                <div class="flex-between">
+                    <span class="text-muted">Wallet Balance</span>
+                    <strong id="disp-wallet" style="color:var(--info)">₹—</strong>
+                </div>
+            </div>
+
+            <form id="pay-form" onsubmit="makePayment(event)">
+                <!-- Manual Trip ID entry if not from URL -->
+                <div class="form-group" id="trip-id-group">
+                    <label>Trip ID</label>
+                    <input type="number" id="trip-id" placeholder="Enter trip ID" min="1">
+                    <button type="button" onclick="loadTripDetails()" class="btn btn-info btn-sm mt-8">Load Trip</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Payment Mode *</label>
+                    <select id="payment-mode" onchange="checkWalletSufficiency()">
+                        <option value="Wallet">💰 Wallet</option>
+                        <option value="UPI">📱 UPI</option>
+                        <option value="Cash">💵 Cash</option>
+                        <option value="Card">💳 Card</option>
+                    </select>
+                </div>
+
+                <div id="wallet-warn" class="alert alert-warning hidden">
+                    ⚠️ Insufficient wallet balance. Please choose another payment mode.
+                </div>
+
+                <div class="form-group">
+                    <label>Amount (₹)</label>
+                    <input type="number" id="amount" placeholder="Auto-filled from trip" step="0.01" min="1" required>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-block" id="pay-btn">
+                    ✅ Confirm Payment
+                </button>
+            </form>
+        </div>
+
+        <!-- Payment Success -->
+        <div id="success-section" class="card hidden">
+            <div class="card-title text-success">✅ Payment Successful!</div>
+            <div style="text-align:center;padding:30px 0;">
+                <div style="font-size:4rem;margin-bottom:16px;">🎉</div>
+                <h2 id="success-amount" style="color:var(--success);font-size:2rem">₹—</h2>
+                <p class="text-muted mt-8">Payment confirmed via <strong id="success-mode">—</strong></p>
+                <p class="text-muted">Trip status updated to <span class="badge badge-success">Completed</span></p>
+            </div>
+            <div class="flex gap-12 mt-16" style="justify-content:center">
+                <a href="rating.html" class="btn btn-warning">⭐ Rate Driver</a>
+                <a href="trip_history.html" class="btn btn-primary">View Trips</a>
+            </div>
+        </div>
+
+        <!-- Info Panel -->
+        <div>
+            <div class="card">
+                <div class="card-title">💡 Payment Methods</div>
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                    <div class="flex gap-12">
+                        <span style="font-size:1.4rem">💰</span>
+                        <div><strong>Wallet</strong><br><span class="text-muted">Instant deduction from your RideShare wallet (trigger fires automatically)</span></div>
+                    </div>
+                    <div class="flex gap-12">
+                        <span style="font-size:1.4rem">📱</span>
+                        <div><strong>UPI</strong><br><span class="text-muted">Pay via PhonePe, GPay, Paytm etc.</span></div>
+                    </div>
+                    <div class="flex gap-12">
+                        <span style="font-size:1.4rem">💵</span>
+                        <div><strong>Cash</strong><br><span class="text-muted">Pay the driver directly in cash.</span></div>
+                    </div>
+                    <div class="flex gap-12">
+                        <span style="font-size:1.4rem">💳</span>
+                        <div><strong>Card</strong><br><span class="text-muted">Credit / Debit card payment.</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="border-left:4px solid var(--info)">
+                <div class="card-title">🔔 Trigger Info</div>
+                <p class="text-muted" style="font-size:0.85rem">
+                    When you confirm payment, the MySQL trigger
+                    <code>trg_update_trip_status</code> automatically updates the
+                    trip status to <strong>Completed</strong>.
+                    <br><br>
+                    If you pay by <strong>Wallet</strong>, trigger
+                    <code>trg_update_wallet</code> deducts your balance automatically.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <strong>RideShare</strong> · 21CSC205P DBMS Mini Project
+</footer>
+
+<script src="js/api.js"></script>
+<script>
+    const user = requireAuth(['passenger']);
+    let walletBalance = 0;
+    let tripFare = 0;
+
+    if (user) {
+        populateNav(user);
+        loadWallet();
+
+        // Pre-fill from URL params (coming from trip_history.html)
+        const params = new URLSearchParams(window.location.search);
+        const tripId = params.get('trip');
+        const fare   = params.get('fare');
+        const driver = params.get('driver');
+
+        if (tripId) {
+            document.getElementById('trip-id').value        = tripId;
+            document.getElementById('disp-trip').textContent = '#' + tripId;
+            document.getElementById('trip-id-group').classList.add('hidden');
+        }
+        if (fare) {
+            tripFare = parseFloat(fare);
+            document.getElementById('amount').value           = tripFare;
+            document.getElementById('disp-fare').textContent  = '₹' + tripFare;
+        }
+        if (driver) {
+            document.getElementById('disp-driver').textContent = driver;
+        }
+    }
+
+    async function loadWallet() {
+        try {
+            const w = await API.passenger.wallet(user.id);
+            walletBalance = parseFloat(w.Balance);
+            document.getElementById('disp-wallet').textContent = '₹' + walletBalance.toFixed(2);
+        } catch (_) {}
+    }
+
+    async function loadTripDetails() {
+        const tripId = document.getElementById('trip-id').value;
+        if (!tripId) return showAlert('Enter a Trip ID', 'error');
+
+        try {
+            const trip = await API.trips.get(tripId);
+            document.getElementById('disp-trip').textContent   = '#' + trip.Trip_ID;
+            document.getElementById('disp-driver').textContent = trip.Driver_Name;
+            document.getElementById('disp-fare').textContent   = '₹' + trip.Fare;
+            document.getElementById('amount').value            = trip.Fare;
+            tripFare = parseFloat(trip.Fare);
+        } catch (err) {
+            showAlert(err.message, 'error');
+        }
+    }
+
+    function checkWalletSufficiency() {
+        const mode = document.getElementById('payment-mode').value;
+        const warn = document.getElementById('wallet-warn');
+        if (mode === 'Wallet' && tripFare > walletBalance)
+            warn.classList.remove('hidden');
+        else
+            warn.classList.add('hidden');
+    }
+
+    async function makePayment(e) {
+        e.preventDefault();
+        const tripId = document.getElementById('trip-id').value;
+        const mode   = document.getElementById('payment-mode').value;
+        const amount = document.getElementById('amount').value;
+        const btn    = document.getElementById('pay-btn');
+
+        if (!tripId) return showAlert('Please enter a Trip ID', 'error');
+
+        btn.textContent = 'Processing…';
+        btn.disabled = true;
+
+        try {
+            const data = await API.payments.pay({
+                trip_id:      tripId,
+                passenger_id: user.id,
+                amount:       parseFloat(amount),
+                payment_mode: mode
+            });
+
+            // Show success
+            document.getElementById('success-amount').textContent = `₹${amount}`;
+            document.getElementById('success-mode').textContent   = mode;
+            document.getElementById('payment-section').classList.add('hidden');
+            document.getElementById('success-section').classList.remove('hidden');
+
+            // Update wallet display
+            loadWallet();
+
+        } catch (err) {
+            showAlert(err.message, 'error');
+            btn.textContent = '✅ Confirm Payment';
+            btn.disabled = false;
+        }
+    }
+</script>
+</body>
+</html>

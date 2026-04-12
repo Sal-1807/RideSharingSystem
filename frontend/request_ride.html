@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Ride – RideShare</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
+    <ul class="nav-links">
+        <li><a href="passenger_dashboard.html">Dashboard</a></li>
+        <li><a href="request_ride.html" class="active">📍 Book Ride</a></li>
+        <li><a href="trip_history.html">📋 Trips</a></li>
+    </ul>
+    <div class="nav-user">
+        <span id="nav-user-name"></span>
+        <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-title">📍 Book a Ride</div>
+    <div class="page-subtitle">Enter your pickup and drop location to request a ride.</div>
+
+    <div class="grid-2">
+
+        <!-- Booking Form -->
+        <div class="card">
+            <div class="card-title">🚗 Ride Request Form</div>
+
+            <div id="alert-box" class="alert"></div>
+
+            <form id="ride-form" onsubmit="requestRide(event)">
+                <!-- Pickup Section -->
+                <div style="background:#f8f9fa;padding:14px;border-radius:8px;margin-bottom:16px;">
+                    <div style="font-weight:600;color:var(--success);margin-bottom:10px;">📍 Pickup Location</div>
+                    <div class="form-group">
+                        <label>Street / Area *</label>
+                        <input type="text" id="pickup-address" placeholder="e.g. MG Road" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>City *</label>
+                            <input type="text" id="pickup-city" placeholder="Hyderabad" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pincode</label>
+                            <input type="text" id="pickup-pincode" placeholder="500001">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drop Section -->
+                <div style="background:#f8f9fa;padding:14px;border-radius:8px;margin-bottom:16px;">
+                    <div style="font-weight:600;color:var(--accent);margin-bottom:10px;">🏁 Drop Location</div>
+                    <div class="form-group">
+                        <label>Street / Area *</label>
+                        <input type="text" id="drop-address" placeholder="e.g. Hitech City" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>City *</label>
+                            <input type="text" id="drop-city" placeholder="Hyderabad" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pincode</label>
+                            <input type="text" id="drop-pincode" placeholder="500081">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Promo Code -->
+                <div class="form-group">
+                    <label>Promo Code (optional)</label>
+                    <div class="flex gap-8">
+                        <input type="text" id="promo-code" placeholder="e.g. NEWUSER10" style="text-transform:uppercase">
+                        <button type="button" onclick="validatePromo()" class="btn btn-success btn-sm">Apply</button>
+                    </div>
+                    <div id="promo-msg" class="text-muted mt-8" style="font-size:0.82rem"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" id="submit-btn">
+                    🚗 Request Ride
+                </button>
+            </form>
+        </div>
+
+        <!-- Info Panel -->
+        <div>
+            <div class="card">
+                <div class="card-title">💡 How It Works</div>
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                    <div class="flex gap-12">
+                        <span style="font-size:1.5rem">1️⃣</span>
+                        <div><strong>Enter Locations</strong><br><span class="text-muted">Fill in your pickup and drop addresses.</span></div>
+                    </div>
+                    <div class="flex gap-12">
+                        <span style="font-size:1.5rem">2️⃣</span>
+                        <div><strong>Request Submitted</strong><br><span class="text-muted">Your ride request is sent to available drivers.</span></div>
+                    </div>
+                    <div class="flex gap-12">
+                        <span style="font-size:1.5rem">3️⃣</span>
+                        <div><strong>Driver Accepts</strong><br><span class="text-muted">A nearby driver accepts and trip begins.</span></div>
+                    </div>
+                    <div class="flex gap-12">
+                        <span style="font-size:1.5rem">4️⃣</span>
+                        <div><strong>Pay & Rate</strong><br><span class="text-muted">Pay via Wallet, UPI or Cash, then rate your driver.</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🎁 Available Promo Codes</div>
+                <div id="promo-list"><div class="loading"><div class="spinner"></div></div></div>
+            </div>
+
+            <!-- Wallet balance -->
+            <div class="wallet-widget">
+                <div class="balance">₹<span id="wallet-bal">—</span></div>
+                <div class="label">Your Wallet Balance</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div id="success-card" class="card hidden" style="border-left:4px solid var(--success)">
+        <div class="card-title text-success">✅ Ride Requested Successfully!</div>
+        <p>Your ride request has been submitted. Request ID: <strong id="req-id">—</strong></p>
+        <p class="text-muted mt-8">A driver will accept your request shortly. You can track it in your dashboard.</p>
+        <div class="mt-16 flex gap-12">
+            <a href="passenger_dashboard.html" class="btn btn-primary">Go to Dashboard</a>
+            <button onclick="resetForm()" class="btn btn-light">Book Another</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <strong>RideShare</strong> · 21CSC205P DBMS Mini Project
+</footer>
+
+<script src="js/api.js"></script>
+<script>
+    const user = requireAuth(['passenger']);
+    if (user) {
+        populateNav(user);
+        loadPromos();
+        loadWallet();
+    }
+
+    async function loadPromos() {
+        try {
+            const promos = await API.passenger.promos();
+            const list = document.getElementById('promo-list');
+            list.innerHTML = promos.length
+                ? promos.map(p => `
+                    <div class="flex-between mb-8" style="cursor:pointer" onclick="applyPromo('${p.Code}')">
+                        <div>
+                            <strong style="color:var(--success)">${p.Code}</strong>
+                            <span class="text-muted"> – ${p.Discount_Percentage}% off</span>
+                        </div>
+                        <span class="badge badge-success">${p.Discount_Percentage}%</span>
+                    </div>`).join('')
+                : '<p class="text-muted">No active promos.</p>';
+        } catch (_) {}
+    }
+
+    async function loadWallet() {
+        try {
+            const w = await API.passenger.wallet(user.id);
+            document.getElementById('wallet-bal').textContent = parseFloat(w.Balance).toFixed(2);
+        } catch (_) {}
+    }
+
+    function applyPromo(code) {
+        document.getElementById('promo-code').value = code;
+        validatePromo();
+    }
+
+    async function validatePromo() {
+        const code = document.getElementById('promo-code').value.trim().toUpperCase();
+        const msg  = document.getElementById('promo-msg');
+        if (!code) return;
+
+        try {
+            const promos = await API.passenger.promos();
+            const match  = promos.find(p => p.Code === code);
+            if (match)
+                msg.innerHTML = `<span class="text-success">✅ ${match.Discount_Percentage}% discount will be applied!</span>`;
+            else
+                msg.innerHTML = `<span class="text-danger">❌ Invalid or expired promo code.</span>`;
+        } catch (_) {}
+    }
+
+    async function requestRide(e) {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        btn.textContent = 'Submitting…';
+        btn.disabled = true;
+
+        try {
+            const data = await API.passenger.requestRide({
+                passenger_id:    user.id,
+                pickup_address:  document.getElementById('pickup-address').value.trim(),
+                pickup_city:     document.getElementById('pickup-city').value.trim(),
+                pickup_pincode:  document.getElementById('pickup-pincode').value.trim(),
+                drop_address:    document.getElementById('drop-address').value.trim(),
+                drop_city:       document.getElementById('drop-city').value.trim(),
+                drop_pincode:    document.getElementById('drop-pincode').value.trim(),
+                promo_code:      document.getElementById('promo-code').value.trim()
+            });
+
+            // Show success card
+            document.getElementById('req-id').textContent = data.request_id;
+            document.getElementById('ride-form').classList.add('hidden');
+            document.getElementById('success-card').classList.remove('hidden');
+
+        } catch (err) {
+            showAlert(err.message, 'error');
+            btn.textContent = '🚗 Request Ride';
+            btn.disabled = false;
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('ride-form').reset();
+        document.getElementById('ride-form').classList.remove('hidden');
+        document.getElementById('success-card').classList.add('hidden');
+        document.getElementById('submit-btn').textContent = '🚗 Request Ride';
+        document.getElementById('submit-btn').disabled = false;
+    }
+</script>
+</body>
+</html>

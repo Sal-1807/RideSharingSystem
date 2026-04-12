@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support – RideShare</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
+    <ul class="nav-links">
+        <li><a href="passenger_dashboard.html">Dashboard</a></li>
+        <li><a href="support_ticket.html" class="active">🎫 Support</a></li>
+    </ul>
+    <div class="nav-user">
+        <span id="nav-user-name"></span>
+        <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-title">🎫 Support Center</div>
+    <div class="page-subtitle">Raise a ticket for any issue and our team will resolve it.</div>
+
+    <div id="alert-box" class="alert"></div>
+
+    <div class="grid-2">
+
+        <!-- Ticket Form -->
+        <div class="card">
+            <div class="card-title">📝 Raise a Support Ticket</div>
+
+            <form id="ticket-form" onsubmit="submitTicket(event)">
+                <div class="form-group">
+                    <label>Issue Category</label>
+                    <select id="category">
+                        <option value="Driver arrived late">Driver arrived late</option>
+                        <option value="Incorrect fare charged">Incorrect fare charged</option>
+                        <option value="Payment not processed">Payment not processed</option>
+                        <option value="Driver behaviour">Driver behaviour</option>
+                        <option value="App issue">App / Technical issue</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Describe Your Issue *</label>
+                    <textarea id="description" rows="5" placeholder="Please describe your issue in detail…" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-accent btn-block" id="submit-btn">
+                    🎫 Submit Ticket
+                </button>
+            </form>
+
+            <!-- Success message -->
+            <div id="success-msg" class="alert alert-success hidden" style="margin-top:16px">
+                ✅ Ticket raised successfully! Our team will contact you soon.
+                <br><strong>Ticket ID: <span id="ticket-id">—</span></strong>
+            </div>
+        </div>
+
+        <!-- My Tickets -->
+        <div class="card">
+            <div class="card-title">📋 My Tickets</div>
+            <div id="tickets-list">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <strong>RideShare</strong> · 21CSC205P DBMS Mini Project
+</footer>
+
+<script src="js/api.js"></script>
+<script>
+    // Works for both passengers and drivers
+    const user = requireAuth(['passenger', 'driver']);
+    if (user) {
+        populateNav(user);
+        loadTickets();
+    }
+
+    async function submitTicket(e) {
+        e.preventDefault();
+        const category    = document.getElementById('category').value;
+        const description = document.getElementById('description').value.trim();
+        const btn         = document.getElementById('submit-btn');
+
+        if (!description) return showAlert('Please describe your issue', 'error');
+
+        btn.textContent = 'Submitting…';
+        btn.disabled = true;
+
+        try {
+            const data = await API.support.raise({
+                user_id:           user.id,
+                user_type:         user.user_type === 'passenger' ? 'Passenger' : 'Driver',
+                issue_description: `[${category}] ${description}`
+            });
+
+            document.getElementById('ticket-id').textContent = data.ticket_id;
+            document.getElementById('success-msg').classList.remove('hidden');
+            document.getElementById('ticket-form').reset();
+            loadTickets();
+
+        } catch (err) {
+            showAlert(err.message, 'error');
+        } finally {
+            btn.textContent = '🎫 Submit Ticket';
+            btn.disabled = false;
+        }
+    }
+
+    async function loadTickets() {
+        try {
+            const userType = user.user_type === 'passenger' ? 'Passenger' : 'Driver';
+            const tickets  = await API.support.my(user.id, userType);
+            const list     = document.getElementById('tickets-list');
+
+            if (!tickets.length) {
+                list.innerHTML = '<div class="empty-state"><div class="icon">🎫</div><p>No tickets raised yet.</p></div>';
+                return;
+            }
+
+            list.innerHTML = tickets.map(t => `
+                <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;">
+                    <div class="flex-between mb-8">
+                        <strong>#${t.Ticket_ID}</strong>
+                        ${statusBadge(t.Status)}
+                    </div>
+                    <p style="font-size:0.88rem;color:var(--text)">${t.Issue_Description}</p>
+                    <div class="text-muted mt-8" style="font-size:0.8rem">${formatDate(t.Created_At)}</div>
+                </div>
+            `).join('');
+        } catch (err) {
+            console.error(err);
+        }
+    }
+</script>
+</body>
+</html>

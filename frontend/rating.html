@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Driver – RideShare</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
+    <ul class="nav-links">
+        <li><a href="passenger_dashboard.html">Dashboard</a></li>
+        <li><a href="trip_history.html">📋 Trips</a></li>
+        <li><a href="rating.html" class="active">⭐ Rate</a></li>
+    </ul>
+    <div class="nav-user">
+        <span id="nav-user-name"></span>
+        <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-title">⭐ Rate Your Driver</div>
+    <div class="page-subtitle">Your feedback helps improve the service for everyone.</div>
+
+    <div id="alert-box" class="alert"></div>
+
+    <div class="grid-2">
+
+        <!-- Rating Form -->
+        <div class="card" id="rating-card">
+            <div class="card-title">🌟 Submit Rating</div>
+
+            <form id="rating-form" onsubmit="submitRating(event)">
+
+                <div class="form-group">
+                    <label>Trip ID *</label>
+                    <div class="flex gap-8">
+                        <input type="number" id="trip-id" placeholder="Enter Trip ID" min="1" required>
+                        <button type="button" onclick="loadTripInfo()" class="btn btn-info btn-sm">Load</button>
+                    </div>
+                </div>
+
+                <!-- Trip info display -->
+                <div id="trip-info" class="hidden" style="background:var(--light);padding:14px;border-radius:8px;margin-bottom:16px;">
+                    <div class="flex-between mb-8">
+                        <span class="text-muted">Driver</span>
+                        <strong id="driver-name">—</strong>
+                    </div>
+                    <div class="flex-between">
+                        <span class="text-muted">Trip Date</span>
+                        <span id="trip-date">—</span>
+                    </div>
+                </div>
+
+                <!-- Hidden fields -->
+                <input type="hidden" id="driver-id">
+
+                <!-- Driver Rating -->
+                <div class="form-group">
+                    <label>Rate the Driver</label>
+                    <div class="star-rating" id="driver-stars">
+                        <input type="radio" name="driver-rating" id="dr5" value="5"><label for="dr5">★</label>
+                        <input type="radio" name="driver-rating" id="dr4" value="4"><label for="dr4">★</label>
+                        <input type="radio" name="driver-rating" id="dr3" value="3" checked><label for="dr3">★</label>
+                        <input type="radio" name="driver-rating" id="dr2" value="2"><label for="dr2">★</label>
+                        <input type="radio" name="driver-rating" id="dr1" value="1"><label for="dr1">★</label>
+                    </div>
+                    <div class="text-muted mt-8" style="font-size:0.82rem">1 = Poor, 5 = Excellent</div>
+                </div>
+
+                <!-- Passenger self-rating (how well they behaved) -->
+                <div class="form-group">
+                    <label>Your Self Rating (as a passenger)</label>
+                    <div class="star-rating" id="passenger-stars">
+                        <input type="radio" name="passenger-rating" id="pr5" value="5"><label for="pr5">★</label>
+                        <input type="radio" name="passenger-rating" id="pr4" value="4"><label for="pr4">★</label>
+                        <input type="radio" name="passenger-rating" id="pr3" value="3" checked><label for="pr3">★</label>
+                        <input type="radio" name="passenger-rating" id="pr2" value="2"><label for="pr2">★</label>
+                        <input type="radio" name="passenger-rating" id="pr1" value="1"><label for="pr1">★</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Comments (optional)</label>
+                    <textarea id="comments" placeholder="Share your experience…" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-warning btn-block" id="rate-btn">
+                    ⭐ Submit Rating
+                </button>
+            </form>
+        </div>
+
+        <!-- Success + Info -->
+        <div>
+            <div id="success-card" class="card hidden" style="border-left:4px solid var(--warning)">
+                <div class="card-title">🎉 Rating Submitted!</div>
+                <div style="text-align:center;padding:20px 0;">
+                    <div style="font-size:3rem">⭐</div>
+                    <p class="mt-8">Thank you for your feedback! Your rating has been recorded.</p>
+                </div>
+                <div class="flex gap-12 mt-8" style="justify-content:center">
+                    <a href="trip_history.html"        class="btn btn-primary">View Trips</a>
+                    <a href="passenger_dashboard.html" class="btn btn-light">Dashboard</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📖 Rating Guide</div>
+                <table>
+                    <thead>
+                        <tr><th>Stars</th><th>Meaning</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>⭐⭐⭐⭐⭐</td><td>Excellent</td></tr>
+                        <tr><td>⭐⭐⭐⭐</td><td>Good</td></tr>
+                        <tr><td>⭐⭐⭐</td><td>Average</td></tr>
+                        <tr><td>⭐⭐</td><td>Below Average</td></tr>
+                        <tr><td>⭐</td><td>Poor</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card" style="border-left:4px solid var(--info)">
+                <div class="card-title">🔔 Trigger Info</div>
+                <p class="text-muted" style="font-size:0.85rem">
+                    The MySQL trigger <code>trg_check_rating</code> validates your
+                    rating before inserting. If you try to submit a rating outside
+                    1–5, the database rejects it automatically.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <strong>RideShare</strong> · 21CSC205P DBMS Mini Project
+</footer>
+
+<script src="js/api.js"></script>
+<script>
+    const user = requireAuth(['passenger']);
+    if (user) {
+        populateNav(user);
+
+        // Pre-fill from URL
+        const params  = new URLSearchParams(window.location.search);
+        const tripId  = params.get('trip');
+        const driverId = params.get('driver_id');
+
+        if (tripId) {
+            document.getElementById('trip-id').value = tripId;
+            loadTripInfo();
+        }
+        if (driverId) {
+            document.getElementById('driver-id').value = driverId;
+        }
+    }
+
+    async function loadTripInfo() {
+        const tripId = document.getElementById('trip-id').value;
+        if (!tripId) return;
+
+        try {
+            const trip = await API.trips.get(tripId);
+            document.getElementById('driver-name').textContent = trip.Driver_Name;
+            document.getElementById('trip-date').textContent   = formatDate(trip.Start_Time);
+            document.getElementById('driver-id').value         = trip.Driver_ID || '';
+            document.getElementById('trip-info').classList.remove('hidden');
+        } catch (err) {
+            showAlert('Trip not found: ' + err.message, 'error');
+        }
+    }
+
+    async function submitRating(e) {
+        e.preventDefault();
+        const tripId   = document.getElementById('trip-id').value;
+        const driverId = document.getElementById('driver-id').value;
+        const driverRating    = document.querySelector('input[name="driver-rating"]:checked')?.value;
+        const passengerRating = document.querySelector('input[name="passenger-rating"]:checked')?.value;
+        const comments = document.getElementById('comments').value.trim();
+        const btn      = document.getElementById('rate-btn');
+
+        if (!tripId)        return showAlert('Please enter a Trip ID', 'error');
+        if (!driverId)      return showAlert('Please load the trip first using the Load button', 'error');
+        if (!driverRating)  return showAlert('Please select a driver rating', 'error');
+
+        btn.textContent = 'Submitting…';
+        btn.disabled = true;
+
+        try {
+            await API.ratings.submit({
+                trip_id:          tripId,
+                passenger_id:     user.id,
+                driver_id:        driverId,
+                driver_rating:    parseInt(driverRating),
+                passenger_rating: parseInt(passengerRating || 3),
+                comments
+            });
+
+            document.getElementById('rating-card').classList.add('hidden');
+            document.getElementById('success-card').classList.remove('hidden');
+
+        } catch (err) {
+            showAlert(err.message, 'error');
+            btn.textContent = '⭐ Submit Rating';
+            btn.disabled = false;
+        }
+    }
+</script>
+</body>
+</html>

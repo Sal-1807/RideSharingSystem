@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip History – RideShare</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
+    <ul class="nav-links">
+        <li><a href="passenger_dashboard.html">Dashboard</a></li>
+        <li><a href="request_ride.html">📍 Book Ride</a></li>
+        <li><a href="trip_history.html" class="active">📋 Trips</a></li>
+        <li><a href="payment.html">💳 Payments</a></li>
+    </ul>
+    <div class="nav-user">
+        <span id="nav-user-name"></span>
+        <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-title">📋 Trip History</div>
+    <div class="page-subtitle">All your rides — completed, ongoing, and cancelled.</div>
+
+    <div id="alert-box" class="alert"></div>
+
+    <!-- Summary Cards -->
+    <div class="stats-grid mb-24">
+        <div class="stat-card"><div class="stat-number" id="total-trips">—</div><div class="stat-label">Total Trips</div></div>
+        <div class="stat-card success"><div class="stat-number" id="completed-trips">—</div><div class="stat-label">Completed</div></div>
+        <div class="stat-card warning"><div class="stat-number" id="ongoing-trips">—</div><div class="stat-label">Ongoing</div></div>
+        <div class="stat-card info"><div class="stat-number" id="total-spent">₹—</div><div class="stat-label">Total Spent</div></div>
+    </div>
+
+    <!-- Trips Table -->
+    <div class="card">
+        <div class="card-title flex-between">
+            <span>🚗 All Trips</span>
+            <input type="text" id="search" placeholder="Search driver or location…"
+                   onkeyup="filterTrips()" style="padding:6px 12px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;width:220px">
+        </div>
+
+        <div class="table-wrapper" id="trips-table">
+            <div class="loading"><div class="spinner"></div></div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <strong>RideShare</strong> · 21CSC205P DBMS Mini Project
+</footer>
+
+<script src="js/api.js"></script>
+<script>
+    const user = requireAuth(['passenger']);
+    let allTrips = [];
+
+    if (user) {
+        populateNav(user);
+        loadTrips();
+    }
+
+    async function loadTrips() {
+        try {
+            allTrips = await API.passenger.trips(user.id);
+
+            // Stats
+            const completed = allTrips.filter(t => t.Status === 'Completed');
+            const ongoing   = allTrips.filter(t => t.Status === 'Ongoing');
+            const spent     = completed.reduce((s, t) => s + (parseFloat(t.Fare) || 0), 0);
+
+            document.getElementById('total-trips').textContent    = allTrips.length;
+            document.getElementById('completed-trips').textContent = completed.length;
+            document.getElementById('ongoing-trips').textContent   = ongoing.length;
+            document.getElementById('total-spent').textContent     = `₹${spent.toFixed(2)}`;
+
+            renderTrips(allTrips);
+        } catch (err) {
+            showAlert('Error loading trips: ' + err.message, 'error');
+        }
+    }
+
+    function renderTrips(trips) {
+        const container = document.getElementById('trips-table');
+        if (!trips.length) {
+            container.innerHTML = '<div class="empty-state"><div class="icon">🚗</div><p>No trips yet. <a href="request_ride.html">Book your first ride!</a></p></div>';
+            return;
+        }
+        container.innerHTML = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>Trip #</th>
+                        <th>From → To</th>
+                        <th>Driver</th>
+                        <th>Distance</th>
+                        <th>Fare</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${trips.map(t => `
+                        <tr>
+                            <td><strong>#${t.Trip_ID}</strong></td>
+                            <td>
+                                <span style="color:var(--success)">●</span> ${t.Pickup_Address}<br>
+                                <span style="color:var(--accent)">●</span> ${t.Drop_Address}
+                            </td>
+                            <td>${t.Driver_Name}<br><small class="text-muted">${t.Driver_Phone}</small></td>
+                            <td>${t.Distance ? t.Distance + ' km' : '—'}</td>
+                            <td><strong>${t.Fare ? '₹' + t.Fare : '—'}</strong></td>
+                            <td>${formatDate(t.Start_Time)}</td>
+                            <td>${statusBadge(t.Status)}</td>
+                            <td>
+                                ${t.Status === 'Completed' ? `
+                                    <a href="payment.html?trip=${t.Trip_ID}&fare=${t.Fare}&driver=${t.Driver_Name}" class="btn btn-success btn-sm">💳 Pay</a>
+                                ` : ''}
+                                ${t.Status === 'Completed' ? `
+                                    <a href="rating.html?trip=${t.Trip_ID}&driver_id=${t.Driver_ID || ''}" class="btn btn-warning btn-sm">⭐</a>
+                                ` : ''}
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+
+    function filterTrips() {
+        const q = document.getElementById('search').value.toLowerCase();
+        const filtered = allTrips.filter(t =>
+            (t.Driver_Name   || '').toLowerCase().includes(q) ||
+            (t.Pickup_Address|| '').toLowerCase().includes(q) ||
+            (t.Drop_Address  || '').toLowerCase().includes(q)
+        );
+        renderTrips(filtered);
+    }
+</script>
+</body>
+</html>
