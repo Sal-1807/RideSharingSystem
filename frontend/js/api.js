@@ -59,15 +59,18 @@ const API = {
 
     // ── Admin helpers ─────────────────────────────────────────
     admin: {
-        passengers:   () => API.get('/admin/passengers'),
-        drivers:      () => API.get('/admin/drivers'),
-        trips:        () => API.get('/admin/trips'),
-        payments:     () => API.get('/admin/payments'),
-        tickets:      () => API.get('/admin/support-tickets'),
-        stats:        () => API.get('/admin/stats'),
-        promos:       () => API.get('/admin/promos'),
-        addPromo:     (b) => API.post('/admin/promos', b),
-        updateTicket: (id, status) => API.patch(`/admin/support-tickets/${id}`, { status }),
+        passengers:    () => API.get('/admin/passengers'),
+        drivers:       () => API.get('/admin/drivers'),
+        trips:         () => API.get('/admin/trips'),
+        payments:      () => API.get('/admin/payments'),
+        tickets:       () => API.get('/admin/support-tickets'),
+        stats:         () => API.get('/admin/stats'),
+        promos:        () => API.get('/admin/promos'),
+        highPayments:  () => API.get('/admin/high-payments'),
+        addPromo:      (b)  => API.post('/admin/promos', b),
+        createPromo:   (b)  => API.post('/admin/promos', b),
+        updateTicket:  (id, status) => API.patch(`/admin/support-tickets/${id}`, { status }),
+        resolveTicket: (id) => API.patch(`/admin/support-tickets/${id}`, { status: 'Resolved' }),
     },
 
     // ── Trip helpers ──────────────────────────────────────────
@@ -78,6 +81,7 @@ const API = {
         distance:     ()   => API.get('/trips/analytics/distance'),
         earnings:     ()   => API.get('/trips/analytics/driver-earnings'),
         aboveAvg:     ()   => API.get('/trips/analytics/above-avg'),
+        longTrips:    ()   => API.get('/trips/analytics/long-trips'),
     },
 
     // ── Payment helpers ───────────────────────────────────────

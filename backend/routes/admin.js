@@ -7,7 +7,7 @@ const db      = require('../config/db');
 router.get('/passengers', async (req, res) => {
     try {
         const [rows] = await db.execute(
-            `SELECT p.Passenger_ID, p.Name, p.Phone, p.Email,
+            `SELECT p.Passenger_ID, p.Name, p.Phone AS Phone_Number, p.Email,
                     w.Balance AS Wallet_Balance,
                     COUNT(rr.Request_ID) AS Total_Requests
              FROM Passenger p
@@ -27,9 +27,9 @@ router.get('/passengers', async (req, res) => {
 router.get('/drivers', async (req, res) => {
     try {
         const [rows] = await db.execute(
-            `SELECT d.Driver_ID, d.Name, d.Phone, d.Email, d.License_No,
-                    d.Is_Available,
-                    v.Model, v.Registration_No,
+            `SELECT d.Driver_ID, d.Name, d.Phone AS Phone_Number, d.Email,
+                    d.License_No AS License_Number, d.Is_Available,
+                    v.Model AS Vehicle_Model, v.Registration_No AS License_Plate,
                     vt.Type_Name      AS Vehicle_Type,
                     COUNT(t.Trip_ID)  AS Total_Trips,
                     SUM(t.Fare)       AS Total_Earnings
@@ -66,7 +66,8 @@ router.get('/trips', async (req, res) => {
 router.get('/payments', async (req, res) => {
     try {
         const [rows] = await db.execute(
-            `SELECT py.Payment_ID, py.Amount, py.Payment_Mode, py.Payment_Status,
+            `SELECT py.Payment_ID, py.Trip_ID, py.Amount, py.Payment_Mode,
+                    py.Payment_Status, py.Payment_Date,
                     p.Name AS Passenger_Name, d.Name AS Driver_Name, t.Fare
              FROM Payment py
              JOIN Trip         t  ON py.Trip_ID    = t.Trip_ID
@@ -113,9 +114,10 @@ router.patch('/support-tickets/:id', async (req, res) => {
 // Dashboard statistics using aggregate functions (Chapter 3.2)
 router.get('/stats', async (req, res) => {
     try {
-        const [[passengers]] = await db.execute('SELECT COUNT(*) AS count FROM Passenger');
-        const [[drivers]]    = await db.execute('SELECT COUNT(*) AS count FROM Driver');
-        const [[trips]]      = await db.execute('SELECT COUNT(*) AS count FROM Trip');
+        const [[passengers]]     = await db.execute('SELECT COUNT(*) AS count FROM Passenger');
+        const [[drivers]]        = await db.execute('SELECT COUNT(*) AS count FROM Driver');
+        const [[trips]]          = await db.execute('SELECT COUNT(*) AS count FROM Trip');
+        const [[completedTrips]] = await db.execute("SELECT COUNT(*) AS count FROM Trip WHERE Status = 'Completed'");
         const [[revenue]]    = await db.execute(
             "SELECT SUM(Amount) AS total FROM Payment WHERE Payment_Status = 'Paid'"
         );
@@ -142,6 +144,7 @@ router.get('/stats', async (req, res) => {
             total_passengers:   passengers.count,
             total_drivers:      drivers.count,
             total_trips:        trips.count,
+            completed_trips:    completedTrips.count,
             total_revenue:      revenue.total || 0,
             avg_fare:           avgFare.avg   ? parseFloat(avgFare.avg).toFixed(2) : 0,
             max_distance:       maxDist.max   || 0,
@@ -168,11 +171,14 @@ router.get('/promos', async (req, res) => {
 
 // ── POST /api/admin/promos ────────────────────────────────────
 router.post('/promos', async (req, res) => {
-    const { code, discount_percentage, expiry_date } = req.body;
+    const { code, discount_percentage, expiry_date, min_fare, max_discount } = req.body;
     try {
+        const expiry = expiry_date || '2099-12-31';
         await db.execute(
-            'INSERT INTO Promo_Details (Code, Discount_Percentage, Expiry_Date) VALUES (?, ?, ?)',
-            [code, discount_percentage, expiry_date]
+            `INSERT INTO Promo_Details
+             (Code, Discount_Percentage, Expiry_Date, Min_Fare_Amount, Max_Discount_Amount)
+             VALUES (?, ?, ?, ?, ?)`,
+            [code, discount_percentage, expiry, min_fare || 0, max_discount || 0]
         );
         res.json({ success: true, message: 'Promo code added!' });
     } catch (err) {

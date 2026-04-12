@@ -92,11 +92,11 @@ router.get('/analytics/driver-earnings', async (req, res) => {
 router.get('/analytics/above-avg', async (req, res) => {
     try {
         const [rows] = await db.execute(
-            `SELECT t.Trip_ID, t.Fare, d.Name AS Driver_Name,
-                    p.Name AS Passenger_Name
+            `SELECT t.Trip_ID, t.Fare, t.Distance, t.Start_Time,
+                    d.Name AS Driver_Name, p.Name AS Passenger_Name
              FROM Trip t
-             JOIN Ride_Request rr ON t.Request_ID = rr.Request_ID
-             JOIN Driver       d  ON t.Driver_ID  = d.Driver_ID
+             JOIN Ride_Request rr ON t.Request_ID   = rr.Request_ID
+             JOIN Driver       d  ON t.Driver_ID    = d.Driver_ID
              JOIN Passenger    p  ON rr.Passenger_ID = p.Passenger_ID
              WHERE t.Fare > (SELECT AVG(Fare) FROM Trip)
              ORDER BY t.Fare DESC`
@@ -112,9 +112,27 @@ router.get('/analytics/above-avg', async (req, res) => {
 router.get('/analytics/long-trips', async (req, res) => {
     try {
         const [rows] = await db.execute(
-            `SELECT Trip_ID FROM Route_Details WHERE Distance_KM > 15
+            `SELECT t.Trip_ID, t.Fare, t.Distance, t.Start_Time,
+                    p.Name AS Passenger_Name, d.Name AS Driver_Name,
+                    'Long Distance (>15km)' AS Trip_Type
+             FROM Trip t
+             JOIN Ride_Request rr ON t.Request_ID   = rr.Request_ID
+             JOIN Passenger    p  ON rr.Passenger_ID = p.Passenger_ID
+             JOIN Driver       d  ON t.Driver_ID     = d.Driver_ID
+             JOIN Route_Details rd ON rd.Trip_ID     = t.Trip_ID
+             WHERE rd.Distance_KM > 15
+
              UNION
-             SELECT Trip_ID FROM Trip WHERE Fare > 300`
+
+             SELECT t.Trip_ID, t.Fare, t.Distance, t.Start_Time,
+                    p.Name AS Passenger_Name, d.Name AS Driver_Name,
+                    'High Fare (>₹300)' AS Trip_Type
+             FROM Trip t
+             JOIN Ride_Request rr ON t.Request_ID   = rr.Request_ID
+             JOIN Passenger    p  ON rr.Passenger_ID = p.Passenger_ID
+             JOIN Driver       d  ON t.Driver_ID     = d.Driver_ID
+             WHERE t.Fare > 300
+             ORDER BY Fare DESC`
         );
         res.json(rows);
     } catch (err) {
