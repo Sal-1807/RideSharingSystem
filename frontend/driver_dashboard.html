@@ -8,60 +8,106 @@
 </head>
 <body>
 
-<nav>
-    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
-    <ul class="nav-links">
-        <li><a href="driver_dashboard.html" class="active">Dashboard</a></li>
-        <li><a href="support_ticket.html">🎫 Support</a></li>
-    </ul>
-    <div class="nav-user">
-        <span id="nav-user-name"></span>
-        <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <h2>RideShare</h2>
+        <p id="nav-user-name"></p>
     </div>
-</nav>
+    <nav class="sidebar-nav">
+        <a href="driver_dashboard.html" class="sidebar-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Dashboard
+        </a>
+        <a href="support_ticket.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Support
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <button onclick="logout()" class="sidebar-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+        </button>
+    </div>
+</aside>
 
-<div class="container">
-    <div class="page-title">🚖 Driver Dashboard</div>
-    <div class="page-subtitle">Welcome back, <span id="driver-name">Driver</span>! Manage your rides from here.</div>
+<!-- Main Content -->
+<main class="main-content">
+    <div class="main-header">
+        <h1>Driver Dashboard</h1>
+    </div>
 
     <div id="alert-box" class="alert"></div>
 
     <!-- Stats -->
     <div class="stats-grid">
-        <div class="stat-card"><div class="stat-number" id="stat-trips">—</div><div class="stat-label">Total Trips</div></div>
-        <div class="stat-card success"><div class="stat-number" id="stat-earnings">₹—</div><div class="stat-label">Total Earnings</div></div>
-        <div class="stat-card warning"><div class="stat-number" id="stat-rating">—</div><div class="stat-label">Avg Rating</div></div>
-        <div class="stat-card info"><div class="stat-number" id="stat-pending">—</div><div class="stat-label">Pending Requests</div></div>
+        <div class="stat-card blue">
+            <div class="stat-body">
+                <div class="stat-label">Total Trips</div>
+                <div class="stat-number" id="stat-trips">—</div>
+            </div>
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-body">
+                <div class="stat-label">Total Earnings</div>
+                <div class="stat-number" id="stat-earnings">₹—</div>
+            </div>
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+        </div>
+        <div class="stat-card orange">
+            <div class="stat-body">
+                <div class="stat-label">Avg Rating</div>
+                <div class="stat-number" id="stat-rating">—</div>
+            </div>
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-body">
+                <div class="stat-label">Pending Requests</div>
+                <div class="stat-number" id="stat-pending">—</div>
+            </div>
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+        </div>
     </div>
 
-    <div class="grid-2">
+    <!-- 2-column layout -->
+    <div class="grid-65-35">
 
-        <!-- Pending Ride Requests -->
+        <!-- Left: Pending Ride Requests -->
         <div class="card">
-            <div class="card-title flex-between">
-                <span>📍 Pending Ride Requests</span>
-                <button onclick="loadPendingRides()" class="btn btn-info btn-sm">🔄 Refresh</button>
+            <div class="card-header">
+                <div class="card-title" style="margin-bottom:0">Pending Ride Requests</div>
+                <button onclick="loadPendingRides()" class="btn btn-outline btn-sm">Refresh</button>
             </div>
             <div id="pending-rides">
                 <div class="loading"><div class="spinner"></div></div>
             </div>
         </div>
 
-        <!-- Active Trip (if any) -->
+        <!-- Right: Active Trip + Earnings -->
         <div>
-            <div class="card" id="active-trip-card">
-                <div class="card-title">🚗 Active Trip</div>
+            <div class="card">
+                <div class="card-title">Active Trip</div>
                 <div id="active-trip">
-                    <div class="empty-state">
+                    <div class="empty-state" style="padding:24px 0">
                         <div class="icon">🚖</div>
-                        <p>No active trip. Accept a ride request to start.</p>
+                        <p style="font-size:.85rem">No active trip.<br>Accept a ride request to start.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Earnings Summary -->
             <div class="card">
-                <div class="card-title">💰 Earnings Summary</div>
+                <div class="card-title">Earnings Summary</div>
                 <div id="earnings-summary">
                     <div class="loading"><div class="spinner"></div></div>
                 </div>
@@ -71,7 +117,7 @@
 
     <!-- Trip History -->
     <div class="card">
-        <div class="card-title">📋 My Trip History</div>
+        <div class="card-title">Trip History</div>
         <div class="table-wrapper" id="trip-history">
             <div class="loading"><div class="spinner"></div></div>
         </div>
@@ -79,16 +125,13 @@
 
     <!-- Ratings Received -->
     <div class="card">
-        <div class="card-title">⭐ Ratings Received</div>
+        <div class="card-title">Ratings Received</div>
         <div id="ratings-section">
             <div class="loading"><div class="spinner"></div></div>
         </div>
     </div>
-</div>
 
-<footer>
-    <strong>RideShare</strong> · 21CSC205P DBMS Mini Project
-</footer>
+</main>
 
 <script src="js/api.js"></script>
 <script>
@@ -96,18 +139,12 @@
     let activeTripId = null;
 
     if (user) {
-        document.getElementById('driver-name').textContent = user.name;
         populateNav(user);
         loadDashboard();
     }
 
     async function loadDashboard() {
-        await Promise.all([
-            loadPendingRides(),
-            loadEarnings(),
-            loadTrips(),
-            loadRatings()
-        ]);
+        await Promise.all([loadPendingRides(), loadEarnings(), loadTrips(), loadRatings()]);
     }
 
     async function loadPendingRides() {
@@ -117,61 +154,61 @@
             const container = document.getElementById('pending-rides');
 
             if (!rides.length) {
-                container.innerHTML = '<div class="empty-state"><div class="icon">📍</div><p>No pending ride requests.</p></div>';
+                container.innerHTML = '<div class="empty-state" style="padding:24px 0"><div class="icon">📍</div><p>No pending ride requests.</p></div>';
                 return;
             }
 
             container.innerHTML = rides.map(r => `
-                <div class="ride-card">
-                    <div class="ride-info">
-                        <strong>👤 ${r.Passenger_Name} · ${r.Passenger_Phone}</strong>
-                        <small>📍 From: ${r.Pickup_Address}, ${r.Pickup_City}</small>
-                        <small>🏁 To: ${r.Drop_Address}, ${r.Drop_City}</small>
-                        <small class="text-muted">${formatDate(r.Request_Time)}</small>
+                <div class="ride-request-card">
+                    <div class="rr-header">
+                        <span class="rr-name">${r.Passenger_Name}</span>
+                        <span class="rr-time">${formatDate(r.Request_Time)}</span>
                     </div>
-                    <button onclick="acceptRide(${r.Request_ID})" class="btn btn-success btn-sm">
-                        ✅ Accept
-                    </button>
+                    <div class="rr-phone">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.45 2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.53 6.53l1.41-1.41a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        ${r.Passenger_Phone}
+                    </div>
+                    <div class="rr-location">
+                        <span class="rr-location-label pickup">Pickup</span>
+                        <span>${r.Pickup_Address}, ${r.Pickup_City}</span>
+                    </div>
+                    <div class="rr-location" style="margin-bottom:12px">
+                        <span class="rr-location-label drop">Drop</span>
+                        <span>${r.Drop_Address}, ${r.Drop_City}</span>
+                    </div>
+                    <button onclick="acceptRide(${r.Request_ID})" class="btn btn-success btn-block">Accept Request</button>
                 </div>
             `).join('');
-        } catch (err) {
-            console.error(err);
-        }
+        } catch (err) { console.error(err); }
     }
 
     async function acceptRide(requestId) {
         try {
-            const data = await API.driver.acceptRide({
-                driver_id:  user.id,
-                request_id: requestId
-            });
+            const data = await API.driver.acceptRide({ driver_id: user.id, request_id: requestId });
             showAlert(data.message, 'success');
             activeTripId = data.trip_id;
             showActiveTrip(data.trip_id);
             loadPendingRides();
             loadTrips();
-        } catch (err) {
-            showAlert(err.message, 'error');
-        }
+        } catch (err) { showAlert(err.message, 'error'); }
     }
 
     function showActiveTrip(tripId) {
         document.getElementById('active-trip').innerHTML = `
-            <div style="background:var(--light);padding:16px;border-radius:8px;">
+            <div style="background:#f8fafc;padding:16px;border-radius:8px;">
                 <div class="flex-between mb-16">
                     <strong>Trip #${tripId}</strong>
                     <span class="badge badge-info">Accepted</span>
                 </div>
                 <div class="form-group">
-                    <label>Enter Distance (km) when ending:</label>
-                    <input type="number" id="trip-distance" placeholder="e.g. 8.5" min="0.1" step="0.1" value="5">
+                    <label>Distance (km) when ending</label>
+                    <input type="number" id="trip-distance" class="no-icon" placeholder="e.g. 8.5" min="0.1" step="0.1" value="5">
                 </div>
                 <div class="flex gap-8">
-                    <button onclick="startTrip(${tripId})" class="btn btn-info" id="start-btn">▶️ Start Trip</button>
-                    <button onclick="endTrip(${tripId})"   class="btn btn-success" id="end-btn">🏁 End Trip</button>
+                    <button onclick="startTrip(${tripId})" class="btn btn-outline" id="start-btn">▶ Start Trip</button>
+                    <button onclick="endTrip(${tripId})"   class="btn btn-success" id="end-btn">End Trip</button>
                 </div>
-            </div>
-        `;
+            </div>`;
     }
 
     async function startTrip(tripId) {
@@ -179,32 +216,23 @@
             await API.driver.startTrip(tripId);
             showAlert('Trip started!', 'success');
             loadTrips();
-        } catch (err) {
-            showAlert(err.message, 'error');
-        }
+        } catch (err) { showAlert(err.message, 'error'); }
     }
 
     async function endTrip(tripId) {
         const dist = document.getElementById('trip-distance').value;
         if (!dist || dist <= 0) return showAlert('Enter a valid distance', 'error');
-
         try {
             const data = await API.driver.endTrip(tripId, dist);
             showAlert(data.message, 'success');
             activeTripId = null;
-
-            // Show fare in active trip area
             document.getElementById('active-trip').innerHTML = `
-                <div class="alert alert-success">
-                    ✅ Trip ended! Fare: <strong>₹${data.fare}</strong> · Distance: ${data.distance} km
-                    <br>Passenger can now make payment and rate you.
-                </div>
-            `;
+                <div class="alert alert-success" style="margin:0">
+                    ✅ Trip ended! Fare: <strong>₹${data.fare}</strong> · ${data.distance} km
+                </div>`;
             loadEarnings();
             loadTrips();
-        } catch (err) {
-            showAlert(err.message, 'error');
-        }
+        } catch (err) { showAlert(err.message, 'error'); }
     }
 
     async function loadEarnings() {
@@ -214,61 +242,35 @@
             document.getElementById('stat-earnings').textContent = e.Total_Earnings ? '₹' + parseFloat(e.Total_Earnings).toFixed(2) : '₹0';
 
             document.getElementById('earnings-summary').innerHTML = `
-                <div class="flex-between mb-8">
-                    <span class="text-muted">Total Trips</span>
-                    <strong>${e.Total_Trips || 0}</strong>
-                </div>
-                <div class="flex-between mb-8">
-                    <span class="text-muted">Total Earnings</span>
-                    <strong style="color:var(--success)">₹${parseFloat(e.Total_Earnings || 0).toFixed(2)}</strong>
-                </div>
-                <div class="flex-between mb-8">
-                    <span class="text-muted">Average Fare</span>
-                    <strong>₹${parseFloat(e.Avg_Fare || 0).toFixed(2)}</strong>
-                </div>
-                <div class="flex-between">
-                    <span class="text-muted">Max Fare</span>
-                    <strong>₹${parseFloat(e.Max_Fare || 0).toFixed(2)}</strong>
-                </div>
-            `;
-        } catch (err) {
-            console.error(err);
-        }
+                <div class="kv-row"><span class="kv-label">Total Earnings</span><span class="kv-value" style="color:var(--success)">₹${parseFloat(e.Total_Earnings || 0).toFixed(2)}</span></div>
+                <div class="kv-row"><span class="kv-label">Avg Fare</span><span class="kv-value">₹${parseFloat(e.Avg_Fare || 0).toFixed(2)}</span></div>
+                <div class="kv-row"><span class="kv-label">Max Fare</span><span class="kv-value">₹${parseFloat(e.Max_Fare || 0).toFixed(2)}</span></div>`;
+        } catch (err) { console.error(err); }
     }
 
     async function loadTrips() {
         try {
             const trips = await API.driver.trips(user.id);
             const container = document.getElementById('trip-history');
-
             if (!trips.length) {
                 container.innerHTML = '<div class="empty-state"><div class="icon">🚗</div><p>No trips yet.</p></div>';
                 return;
             }
-
             container.innerHTML = `
                 <table>
-                    <thead>
-                        <tr><th>#</th><th>Passenger</th><th>Route</th><th>Distance</th><th>Fare</th><th>Date</th><th>Status</th></tr>
-                    </thead>
+                    <thead><tr><th>#</th><th>Passenger</th><th>Route</th><th>Fare</th><th>Status</th></tr></thead>
                     <tbody>
                         ${trips.map(t => `
                             <tr>
-                                <td>${t.Trip_ID}</td>
+                                <td class="table-link">${t.Trip_ID}</td>
                                 <td>${t.Passenger_Name}</td>
-                                <td>${t.Pickup_Address} → ${t.Drop_Address}</td>
-                                <td>${t.Distance || '—'} km</td>
+                                <td style="font-size:.82rem">${t.Pickup_Address} → ${t.Drop_Address}</td>
                                 <td>${t.Fare ? '₹' + t.Fare : '—'}</td>
-                                <td>${formatDate(t.Start_Time)}</td>
                                 <td>${statusBadge(t.Status)}</td>
-                            </tr>
-                        `).join('')}
+                            </tr>`).join('')}
                     </tbody>
-                </table>
-            `;
-        } catch (err) {
-            console.error(err);
-        }
+                </table>`;
+        } catch (err) { console.error(err); }
     }
 
     async function loadRatings() {
@@ -282,21 +284,20 @@
                 return;
             }
 
+            const stars = Math.round(parseFloat(average_rating) || 0);
             container.innerHTML = `
-                <p class="text-muted mb-16">Average Rating: <strong>${average_rating} / 5</strong></p>
+                <div class="rating-big">${average_rating}</div>
+                <div class="rating-stars">${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}</div>
+                <div class="rating-count">Based on ${ratings.length} reviews</div>
                 ${ratings.map(r => `
-                    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;">
-                        <div class="flex-between">
-                            <strong>${r.Passenger_Name}</strong>
-                            <span style="color:#f39c12;font-size:1.2rem">${'⭐'.repeat(r.Driver_Rating)}</span>
+                    <div class="rating-card">
+                        <div>
+                            <div class="rc-name">${r.Passenger_Name}</div>
+                            ${r.Comments ? `<div class="rc-comment">"${r.Comments}"</div>` : ''}
                         </div>
-                        ${r.Comments ? `<p class="text-muted mt-8" style="font-size:0.88rem">"${r.Comments}"</p>` : ''}
-                    </div>
-                `).join('')}
-            `;
-        } catch (err) {
-            console.error(err);
-        }
+                        <span class="rc-stars">${'★'.repeat(r.Driver_Rating)}${'☆'.repeat(5 - r.Driver_Rating)}</span>
+                    </div>`).join('')}`;
+        } catch (err) { console.error(err); }
     }
 </script>
 </body>

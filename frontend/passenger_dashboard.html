@@ -8,70 +8,117 @@
 </head>
 <body>
 
-<nav>
-    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
-    <ul class="nav-links">
-        <li><a href="passenger_dashboard.html" class="active">Dashboard</a></li>
-        <li><a href="request_ride.html">📍 Book Ride</a></li>
-        <li><a href="trip_history.html">📋 Trips</a></li>
-        <li><a href="payment.html">💳 Payments</a></li>
-        <li><a href="rating.html">⭐ Rate</a></li>
-        <li><a href="support_ticket.html">🎫 Support</a></li>
-    </ul>
-    <div class="nav-user">
-        <span id="nav-user-name"></span>
-        <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <h2>RideShare</h2>
+        <p id="nav-user-name"></p>
     </div>
-</nav>
+    <nav class="sidebar-nav">
+        <a href="passenger_dashboard.html" class="sidebar-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Dashboard
+        </a>
+        <a href="request_ride.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Book Ride
+        </a>
+        <a href="trip_history.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Trip History
+        </a>
+        <a href="payment.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Payments
+        </a>
+        <a href="rating.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Rate Driver
+        </a>
+        <a href="support_ticket.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Support
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <button onclick="logout()" class="sidebar-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+        </button>
+    </div>
+</aside>
 
-<div class="container">
-    <div class="page-title">👋 Welcome, <span id="user-name">Passenger</span>!</div>
-    <div class="page-subtitle">Manage your rides, payments and wallet from here.</div>
+<!-- Main Content -->
+<main class="main-content">
+    <div class="main-header">
+        <h1>Dashboard</h1>
+    </div>
 
     <div id="alert-box" class="alert"></div>
 
-    <!-- Stats Row -->
+    <!-- Stats -->
     <div class="stats-grid">
+        <div class="stat-card blue">
+            <div class="stat-body">
+                <div class="stat-label">Total Trips</div>
+                <div class="stat-number" id="stat-trips">—</div>
+            </div>
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-body">
+                <div class="stat-label">Wallet Balance</div>
+                <div class="stat-number" id="stat-wallet">₹—</div>
+            </div>
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            </div>
+        </div>
+        <div class="stat-card orange">
+            <div class="stat-body">
+                <div class="stat-label">Pending Requests</div>
+                <div class="stat-number" id="stat-pending">—</div>
+            </div>
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+        </div>
         <div class="stat-card">
-            <div class="stat-number" id="stat-trips">—</div>
-            <div class="stat-label">Total Trips</div>
-        </div>
-        <div class="stat-card success">
-            <div class="stat-number" id="stat-wallet">₹—</div>
-            <div class="stat-label">Wallet Balance</div>
-        </div>
-        <div class="stat-card accent">
-            <div class="stat-number" id="stat-pending">—</div>
-            <div class="stat-label">Pending Requests</div>
-        </div>
-        <div class="stat-card info">
-            <div class="stat-number" id="stat-tickets">—</div>
-            <div class="stat-label">Support Tickets</div>
+            <div class="stat-body">
+                <div class="stat-label">Support Tickets</div>
+                <div class="stat-number" id="stat-tickets">—</div>
+            </div>
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
         </div>
     </div>
 
-    <div class="grid-2">
-        <!-- Quick Actions -->
+    <!-- Main 2-column layout -->
+    <div class="grid-65-35">
+
+        <!-- Left: Recent Ride Requests -->
         <div class="card">
-            <div class="card-title">⚡ Quick Actions</div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-                <a href="request_ride.html"  class="btn btn-primary">📍 Book a Ride</a>
-                <a href="trip_history.html"  class="btn btn-info">📋 View Trip History</a>
-                <a href="payment.html"       class="btn btn-success">💳 Make Payment</a>
-                <a href="rating.html"        class="btn btn-warning">⭐ Rate a Driver</a>
-                <a href="support_ticket.html" class="btn btn-accent">🎫 Raise Support Ticket</a>
+            <div class="card-header">
+                <div class="card-title" style="margin-bottom:0">Recent Ride Requests</div>
+            </div>
+            <div class="table-wrapper" id="rides-section">
+                <div class="loading"><div class="spinner"></div></div>
             </div>
         </div>
 
-        <!-- Wallet & Promo Codes -->
+        <!-- Right: Wallet + Promos -->
         <div>
             <div class="wallet-widget">
-                <div class="balance">₹<span id="wallet-balance">—</span></div>
-                <div class="label">Wallet Balance · Tap to top up</div>
+                <span class="wallet-label">Wallet</span>
+                <span class="balance">₹<span id="wallet-balance">—</span></span>
+                <a href="payment.html" class="btn btn-primary btn-block">Top Up</a>
             </div>
 
             <div class="card">
-                <div class="card-title">🎁 Active Promo Codes</div>
+                <div class="card-title">Active Promo Codes</div>
                 <div id="promo-list">
                     <div class="loading"><div class="spinner"></div></div>
                 </div>
@@ -79,52 +126,46 @@
         </div>
     </div>
 
-    <!-- Recent Ride Requests -->
+    <!-- Quick Actions -->
     <div class="card">
-        <div class="card-title">🚗 Recent Ride Requests</div>
-        <div class="table-wrapper" id="rides-section">
-            <div class="loading"><div class="spinner"></div></div>
+        <div class="card-title">Quick Actions</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <a href="request_ride.html"   class="btn btn-primary">Book a Ride</a>
+            <a href="trip_history.html"   class="btn btn-outline">View Trips</a>
+            <a href="payment.html"        class="btn btn-outline">Make Payment</a>
+            <a href="rating.html"         class="btn btn-outline">Rate Driver</a>
+            <a href="support_ticket.html" class="btn btn-outline">Support</a>
         </div>
     </div>
-</div>
 
-<footer>
-    <strong>RideShare</strong> · 21CSC205P DBMS Mini Project · SRM Institute of Science and Technology
-</footer>
+</main>
 
 <script src="js/api.js"></script>
 <script>
     const user = requireAuth(['passenger']);
     if (user) {
-        document.getElementById('user-name').textContent = user.name;
         populateNav(user);
         loadDashboard();
     }
 
     async function loadDashboard() {
         try {
-            // Load wallet
             const wallet = await API.passenger.wallet(user.id);
             const bal = parseFloat(wallet.Balance).toFixed(2);
-            document.getElementById('stat-wallet').textContent  = `₹${bal}`;
+            document.getElementById('stat-wallet').textContent   = `₹${bal}`;
             document.getElementById('wallet-balance').textContent = bal;
 
-            // Load ride requests
             const rides = await API.passenger.rides(user.id);
             const pending = rides.filter(r => r.Status === 'Pending').length;
             document.getElementById('stat-pending').textContent = pending;
+            renderRides(rides.slice(0, 5));
 
-            renderRides(rides.slice(0, 5));  // show latest 5
-
-            // Load trips count
             const trips = await API.passenger.trips(user.id);
             document.getElementById('stat-trips').textContent = trips.length;
 
-            // Load tickets count
             const tickets = await API.passenger.tickets(user.id);
             document.getElementById('stat-tickets').textContent = tickets.length;
 
-            // Load promo codes
             const promos = await API.passenger.promos();
             renderPromos(promos);
 
@@ -142,18 +183,12 @@
         container.innerHTML = `
             <table>
                 <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>From</th>
-                        <th>To</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                    </tr>
+                    <tr><th>#</th><th>From</th><th>To</th><th>Time</th><th>Status</th></tr>
                 </thead>
                 <tbody>
                     ${rides.map(r => `
                         <tr>
-                            <td>${r.Request_ID}</td>
+                            <td class="table-link">${r.Request_ID}</td>
                             <td>${r.Pickup_Address}, ${r.Pickup_City}</td>
                             <td>${r.Drop_Address}, ${r.Drop_City}</td>
                             <td>${formatDate(r.Request_Time)}</td>
@@ -161,8 +196,7 @@
                         </tr>
                     `).join('')}
                 </tbody>
-            </table>
-        `;
+            </table>`;
     }
 
     function renderPromos(promos) {
@@ -172,12 +206,9 @@
             return;
         }
         container.innerHTML = promos.map(p => `
-            <div class="flex-between mb-16">
-                <div>
-                    <strong style="color:var(--success);font-size:1rem">${p.Code}</strong>
-                    <div class="text-muted">${p.Discount_Percentage}% off · Expires ${p.Expiry_Date}</div>
-                </div>
-                <span class="badge badge-success">${p.Discount_Percentage}%</span>
+            <div class="promo-chip">
+                <div class="promo-code">${p.Code}</div>
+                <div class="promo-desc">${p.Discount_Percentage}% off on weekends · Expires ${p.Expiry_Date || 'N/A'}</div>
             </div>
         `).join('');
     }

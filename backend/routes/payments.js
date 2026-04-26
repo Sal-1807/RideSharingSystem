@@ -15,6 +15,14 @@ router.post('/', async (req, res) => {
         return res.status(400).json({ error: 'trip_id, amount and payment_mode are required' });
 
     try {
+        // Prevent duplicate payment for the same trip
+        const [existing] = await db.execute(
+            'SELECT Payment_ID FROM Payment WHERE Trip_ID = ?',
+            [trip_id]
+        );
+        if (existing.length > 0)
+            return res.status(409).json({ error: 'This trip has already been paid for' });
+
         // Get wallet ID for this passenger (if paying by wallet)
         let walletId = null;
         if (payment_mode === 'Wallet') {

@@ -8,138 +8,157 @@
 </head>
 <body>
 
-<nav>
-    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
-    <ul class="nav-links">
-        <li><a href="passenger_dashboard.html">Dashboard</a></li>
-        <li><a href="request_ride.html" class="active">📍 Book Ride</a></li>
-        <li><a href="trip_history.html">📋 Trips</a></li>
-    </ul>
-    <div class="nav-user">
-        <span id="nav-user-name"></span>
-        <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <h2>RideShare</h2>
+        <p id="nav-user-name"></p>
     </div>
-</nav>
+    <nav class="sidebar-nav">
+        <a href="passenger_dashboard.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Dashboard
+        </a>
+        <a href="request_ride.html" class="sidebar-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Book Ride
+        </a>
+        <a href="trip_history.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Trip History
+        </a>
+        <a href="payment.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Payments
+        </a>
+        <a href="rating.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Rate Driver
+        </a>
+        <a href="support_ticket.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Support
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <button onclick="logout()" class="sidebar-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+        </button>
+    </div>
+</aside>
 
-<div class="container">
-    <div class="page-title">📍 Book a Ride</div>
-    <div class="page-subtitle">Enter your pickup and drop location to request a ride.</div>
+<main class="main-content">
+    <div class="main-header">
+        <h1>Book a Ride</h1>
+        <p>Enter your pickup and drop location to request a ride.</p>
+    </div>
+
+    <div id="alert-box" class="alert"></div>
 
     <div class="grid-2">
 
         <!-- Booking Form -->
         <div class="card">
-            <div class="card-title">🚗 Ride Request Form</div>
-
-            <div id="alert-box" class="alert"></div>
+            <div class="card-title">Ride Request Form</div>
 
             <form id="ride-form" onsubmit="requestRide(event)">
-                <!-- Pickup Section -->
-                <div style="background:#f8f9fa;padding:14px;border-radius:8px;margin-bottom:16px;">
-                    <div style="font-weight:600;color:var(--success);margin-bottom:10px;">📍 Pickup Location</div>
+
+                <div style="background:#f8fafc;padding:16px;border-radius:8px;margin-bottom:16px;border:1px solid var(--border);">
+                    <div style="font-weight:700;color:var(--success);margin-bottom:12px;font-size:.85rem;text-transform:uppercase;letter-spacing:.4px;">Pickup Location</div>
                     <div class="form-group">
-                        <label>Street / Area *</label>
-                        <input type="text" id="pickup-address" placeholder="e.g. MG Road" required>
+                        <label>Street / Area</label>
+                        <input type="text" id="pickup-address" class="no-icon" placeholder="e.g. MG Road" required>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>City *</label>
-                            <input type="text" id="pickup-city" placeholder="Hyderabad" required>
+                            <label>City</label>
+                            <input type="text" id="pickup-city" class="no-icon" placeholder="Bangalore" required>
                         </div>
                         <div class="form-group">
                             <label>Pincode</label>
-                            <input type="text" id="pickup-pincode" placeholder="500001">
+                            <input type="text" id="pickup-pincode" class="no-icon" placeholder="500001">
                         </div>
                     </div>
                 </div>
 
-                <!-- Drop Section -->
-                <div style="background:#f8f9fa;padding:14px;border-radius:8px;margin-bottom:16px;">
-                    <div style="font-weight:600;color:var(--accent);margin-bottom:10px;">🏁 Drop Location</div>
+                <div style="background:#f8fafc;padding:16px;border-radius:8px;margin-bottom:16px;border:1px solid var(--border);">
+                    <div style="font-weight:700;color:var(--danger);margin-bottom:12px;font-size:.85rem;text-transform:uppercase;letter-spacing:.4px;">Drop Location</div>
                     <div class="form-group">
-                        <label>Street / Area *</label>
-                        <input type="text" id="drop-address" placeholder="e.g. Hitech City" required>
+                        <label>Street / Area</label>
+                        <input type="text" id="drop-address" class="no-icon" placeholder="e.g. Koramangala" required>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>City *</label>
-                            <input type="text" id="drop-city" placeholder="Hyderabad" required>
+                            <label>City</label>
+                            <input type="text" id="drop-city" class="no-icon" placeholder="Bangalore" required>
                         </div>
                         <div class="form-group">
                             <label>Pincode</label>
-                            <input type="text" id="drop-pincode" placeholder="500081">
+                            <input type="text" id="drop-pincode" class="no-icon" placeholder="560034">
                         </div>
                     </div>
                 </div>
 
-                <!-- Promo Code -->
                 <div class="form-group">
                     <label>Promo Code (optional)</label>
                     <div class="flex gap-8">
-                        <input type="text" id="promo-code" placeholder="e.g. NEWUSER10" style="text-transform:uppercase">
-                        <button type="button" onclick="validatePromo()" class="btn btn-success btn-sm">Apply</button>
+                        <input type="text" id="promo-code" class="no-icon" placeholder="e.g. FIRST50" style="text-transform:uppercase">
+                        <button type="button" onclick="validatePromo()" class="btn btn-outline btn-sm">Apply</button>
                     </div>
-                    <div id="promo-msg" class="text-muted mt-8" style="font-size:0.82rem"></div>
+                    <div id="promo-msg" class="text-muted mt-8" style="font-size:.82rem"></div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-block" id="submit-btn">
-                    🚗 Request Ride
-                </button>
+                <button type="submit" class="btn btn-primary btn-block" id="submit-btn">Request Ride</button>
             </form>
         </div>
 
         <!-- Info Panel -->
         <div>
+            <div class="wallet-widget">
+                <span class="wallet-label">Your Wallet Balance</span>
+                <span class="balance">₹<span id="wallet-bal">—</span></span>
+            </div>
+
             <div class="card">
-                <div class="card-title">💡 How It Works</div>
-                <div style="display:flex;flex-direction:column;gap:12px;">
+                <div class="card-title">How It Works</div>
+                <div style="display:flex;flex-direction:column;gap:14px;">
                     <div class="flex gap-12">
-                        <span style="font-size:1.5rem">1️⃣</span>
+                        <span style="font-size:1.4rem;min-width:28px">1</span>
                         <div><strong>Enter Locations</strong><br><span class="text-muted">Fill in your pickup and drop addresses.</span></div>
                     </div>
                     <div class="flex gap-12">
-                        <span style="font-size:1.5rem">2️⃣</span>
-                        <div><strong>Request Submitted</strong><br><span class="text-muted">Your ride request is sent to available drivers.</span></div>
+                        <span style="font-size:1.4rem;min-width:28px">2</span>
+                        <div><strong>Request Submitted</strong><br><span class="text-muted">Your ride is sent to available drivers.</span></div>
                     </div>
                     <div class="flex gap-12">
-                        <span style="font-size:1.5rem">3️⃣</span>
+                        <span style="font-size:1.4rem;min-width:28px">3</span>
                         <div><strong>Driver Accepts</strong><br><span class="text-muted">A nearby driver accepts and trip begins.</span></div>
                     </div>
                     <div class="flex gap-12">
-                        <span style="font-size:1.5rem">4️⃣</span>
-                        <div><strong>Pay & Rate</strong><br><span class="text-muted">Pay via Wallet, UPI or Cash, then rate your driver.</span></div>
+                        <span style="font-size:1.4rem;min-width:28px">4</span>
+                        <div><strong>Pay &amp; Rate</strong><br><span class="text-muted">Pay via Wallet, UPI, or Cash, then rate.</span></div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-title">🎁 Available Promo Codes</div>
+                <div class="card-title">Available Promo Codes</div>
                 <div id="promo-list"><div class="loading"><div class="spinner"></div></div></div>
-            </div>
-
-            <!-- Wallet balance -->
-            <div class="wallet-widget">
-                <div class="balance">₹<span id="wallet-bal">—</span></div>
-                <div class="label">Your Wallet Balance</div>
             </div>
         </div>
     </div>
 
-    <!-- Success Message -->
+    <!-- Success Card -->
     <div id="success-card" class="card hidden" style="border-left:4px solid var(--success)">
         <div class="card-title text-success">✅ Ride Requested Successfully!</div>
         <p>Your ride request has been submitted. Request ID: <strong id="req-id">—</strong></p>
-        <p class="text-muted mt-8">A driver will accept your request shortly. You can track it in your dashboard.</p>
+        <p class="text-muted mt-8">A driver will accept your request shortly.</p>
         <div class="mt-16 flex gap-12">
             <a href="passenger_dashboard.html" class="btn btn-primary">Go to Dashboard</a>
             <button onclick="resetForm()" class="btn btn-light">Book Another</button>
         </div>
     </div>
-</div>
-
-<footer>
-    <strong>RideShare</strong> · 21CSC205P DBMS Mini Project
-</footer>
+</main>
 
 <script src="js/api.js"></script>
 <script>
@@ -183,7 +202,6 @@
         const code = document.getElementById('promo-code').value.trim().toUpperCase();
         const msg  = document.getElementById('promo-msg');
         if (!code) return;
-
         try {
             const promos = await API.passenger.promos();
             const match  = promos.find(p => p.Code === code);
@@ -202,24 +220,21 @@
 
         try {
             const data = await API.passenger.requestRide({
-                passenger_id:    user.id,
-                pickup_address:  document.getElementById('pickup-address').value.trim(),
-                pickup_city:     document.getElementById('pickup-city').value.trim(),
-                pickup_pincode:  document.getElementById('pickup-pincode').value.trim(),
-                drop_address:    document.getElementById('drop-address').value.trim(),
-                drop_city:       document.getElementById('drop-city').value.trim(),
-                drop_pincode:    document.getElementById('drop-pincode').value.trim(),
-                promo_code:      document.getElementById('promo-code').value.trim()
+                passenger_id:   user.id,
+                pickup_address: document.getElementById('pickup-address').value.trim(),
+                pickup_city:    document.getElementById('pickup-city').value.trim(),
+                pickup_pincode: document.getElementById('pickup-pincode').value.trim(),
+                drop_address:   document.getElementById('drop-address').value.trim(),
+                drop_city:      document.getElementById('drop-city').value.trim(),
+                drop_pincode:   document.getElementById('drop-pincode').value.trim(),
+                promo_code:     document.getElementById('promo-code').value.trim()
             });
-
-            // Show success card
             document.getElementById('req-id').textContent = data.request_id;
             document.getElementById('ride-form').classList.add('hidden');
             document.getElementById('success-card').classList.remove('hidden');
-
         } catch (err) {
             showAlert(err.message, 'error');
-            btn.textContent = '🚗 Request Ride';
+            btn.textContent = 'Request Ride';
             btn.disabled = false;
         }
     }
@@ -228,7 +243,7 @@
         document.getElementById('ride-form').reset();
         document.getElementById('ride-form').classList.remove('hidden');
         document.getElementById('success-card').classList.add('hidden');
-        document.getElementById('submit-btn').textContent = '🚗 Request Ride';
+        document.getElementById('submit-btn').textContent = 'Request Ride';
         document.getElementById('submit-btn').disabled = false;
     }
 </script>

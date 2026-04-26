@@ -132,10 +132,13 @@ router.get('/trips/:passengerId', async (req, res) => {
                 t.Distance,
                 t.Fare,
                 t.Status,
+                t.Driver_ID,
                 d.Name       AS Driver_Name,
                 d.Phone      AS Driver_Phone,
                 pl.Address   AS Pickup_Address,
-                dl.Address   AS Drop_Address
+                dl.Address   AS Drop_Address,
+                (SELECT COUNT(*) FROM Payment py WHERE py.Trip_ID = t.Trip_ID) AS Has_Paid,
+                (SELECT COUNT(*) FROM Rating_Review r WHERE r.Trip_ID = t.Trip_ID AND r.Passenger_ID = rr.Passenger_ID) AS Has_Rated
              FROM Trip t
              JOIN Ride_Request rr ON t.Request_ID = rr.Request_ID
              JOIN Driver       d  ON t.Driver_ID  = d.Driver_ID

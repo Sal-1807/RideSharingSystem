@@ -8,22 +8,50 @@
 </head>
 <body>
 
-<nav>
-    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
-    <ul class="nav-links">
-        <li><a href="passenger_dashboard.html">Dashboard</a></li>
-        <li><a href="trip_history.html">📋 Trips</a></li>
-        <li><a href="payment.html" class="active">💳 Payments</a></li>
-    </ul>
-    <div class="nav-user">
-        <span id="nav-user-name"></span>
-        <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <h2>RideShare</h2>
+        <p id="nav-user-name"></p>
     </div>
-</nav>
+    <nav class="sidebar-nav">
+        <a href="passenger_dashboard.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Dashboard
+        </a>
+        <a href="request_ride.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Book Ride
+        </a>
+        <a href="trip_history.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Trip History
+        </a>
+        <a href="payment.html" class="sidebar-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Payments
+        </a>
+        <a href="rating.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Rate Driver
+        </a>
+        <a href="support_ticket.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Support
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <button onclick="logout()" class="sidebar-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+        </button>
+    </div>
+</aside>
 
-<div class="container">
-    <div class="page-title">💳 Payment</div>
-    <div class="page-subtitle">Complete your payment for the trip.</div>
+<main class="main-content">
+    <div class="main-header">
+        <h1>Payment</h1>
+        <p>Complete your payment for the trip.</p>
+    </div>
 
     <div id="alert-box" class="alert"></div>
 
@@ -31,72 +59,70 @@
 
         <!-- Payment Form -->
         <div class="card" id="payment-section">
-            <div class="card-title">💰 Trip Payment</div>
+            <div class="card-title">Trip Payment</div>
 
-            <!-- Fare Summary -->
-            <div style="background:var(--light);padding:16px;border-radius:8px;margin-bottom:20px;">
-                <div class="flex-between mb-8">
-                    <span class="text-muted">Trip ID</span>
-                    <strong id="disp-trip">#—</strong>
+            <div style="background:#f8fafc;padding:16px;border-radius:8px;margin-bottom:20px;border:1px solid var(--border);">
+                <div class="kv-row">
+                    <span class="kv-label">Trip ID</span>
+                    <strong id="disp-trip" class="kv-value">#—</strong>
                 </div>
-                <div class="flex-between mb-8">
-                    <span class="text-muted">Driver</span>
-                    <strong id="disp-driver">—</strong>
+                <div class="kv-row">
+                    <span class="kv-label">Driver</span>
+                    <strong id="disp-driver" class="kv-value">—</strong>
                 </div>
-                <div class="flex-between mb-8">
-                    <span class="text-muted">Fare</span>
-                    <strong id="disp-fare" style="color:var(--success);font-size:1.2rem">₹—</strong>
+                <div class="kv-row">
+                    <span class="kv-label">Fare</span>
+                    <strong id="disp-fare" class="kv-value" style="color:var(--success);font-size:1.1rem">₹—</strong>
                 </div>
-                <div class="flex-between">
-                    <span class="text-muted">Wallet Balance</span>
-                    <strong id="disp-wallet" style="color:var(--info)">₹—</strong>
+                <div class="kv-row" style="border-bottom:none;margin-bottom:0;padding-bottom:0">
+                    <span class="kv-label">Wallet Balance</span>
+                    <strong id="disp-wallet" class="kv-value" style="color:var(--primary)">₹—</strong>
                 </div>
             </div>
 
             <form id="pay-form" onsubmit="makePayment(event)">
-                <!-- Manual Trip ID entry if not from URL -->
                 <div class="form-group" id="trip-id-group">
                     <label>Trip ID</label>
-                    <input type="number" id="trip-id" placeholder="Enter trip ID" min="1">
-                    <button type="button" onclick="loadTripDetails()" class="btn btn-info btn-sm mt-8">Load Trip</button>
+                    <input type="number" id="trip-id" class="no-icon" placeholder="Enter trip ID" min="1">
+                    <button type="button" onclick="loadTripDetails()" class="btn btn-outline btn-sm mt-8">Load Trip</button>
                 </div>
 
                 <div class="form-group">
-                    <label>Payment Mode *</label>
-                    <select id="payment-mode" onchange="checkWalletSufficiency()">
-                        <option value="Wallet">💰 Wallet</option>
-                        <option value="UPI">📱 UPI</option>
-                        <option value="Cash">💵 Cash</option>
-                        <option value="Card">💳 Card</option>
+                    <label>Payment Mode</label>
+                    <select id="payment-mode" class="no-icon" onchange="checkWalletSufficiency()">
+                        <option value="Wallet">Wallet</option>
+                        <option value="UPI">UPI</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Card">Card</option>
                     </select>
                 </div>
 
                 <div id="wallet-warn" class="alert alert-warning hidden">
-                    ⚠️ Insufficient wallet balance. Please choose another payment mode.
+                    Insufficient wallet balance. Please choose another payment mode.
                 </div>
 
                 <div class="form-group">
                     <label>Amount (₹)</label>
-                    <input type="number" id="amount" placeholder="Auto-filled from trip" step="0.01" min="1" required>
+                    <input type="number" id="amount" class="no-icon" placeholder="Auto-filled from trip" step="0.01" min="1" required>
                 </div>
 
-                <button type="submit" class="btn btn-success btn-block" id="pay-btn">
-                    ✅ Confirm Payment
+                <button type="submit" class="btn btn-primary btn-block" id="pay-btn">
+                    Confirm Payment
                 </button>
             </form>
         </div>
 
         <!-- Payment Success -->
-        <div id="success-section" class="card hidden">
-            <div class="card-title text-success">✅ Payment Successful!</div>
+        <div id="success-section" class="card hidden" style="border-left:4px solid var(--success)">
+            <div class="card-title text-success">Payment Successful!</div>
             <div style="text-align:center;padding:30px 0;">
-                <div style="font-size:4rem;margin-bottom:16px;">🎉</div>
+                <div style="font-size:3.5rem;margin-bottom:16px;">🎉</div>
                 <h2 id="success-amount" style="color:var(--success);font-size:2rem">₹—</h2>
                 <p class="text-muted mt-8">Payment confirmed via <strong id="success-mode">—</strong></p>
                 <p class="text-muted">Trip status updated to <span class="badge badge-success">Completed</span></p>
             </div>
             <div class="flex gap-12 mt-16" style="justify-content:center">
-                <a href="rating.html" class="btn btn-warning">⭐ Rate Driver</a>
+                <a href="rating.html" class="btn btn-outline">Rate Driver</a>
                 <a href="trip_history.html" class="btn btn-primary">View Trips</a>
             </div>
         </div>
@@ -104,30 +130,30 @@
         <!-- Info Panel -->
         <div>
             <div class="card">
-                <div class="card-title">💡 Payment Methods</div>
-                <div style="display:flex;flex-direction:column;gap:12px;">
+                <div class="card-title">Payment Methods</div>
+                <div style="display:flex;flex-direction:column;gap:14px;">
                     <div class="flex gap-12">
-                        <span style="font-size:1.4rem">💰</span>
-                        <div><strong>Wallet</strong><br><span class="text-muted">Instant deduction from your RideShare wallet (trigger fires automatically)</span></div>
+                        <span style="font-size:1.3rem;min-width:28px">💰</span>
+                        <div><strong>Wallet</strong><br><span class="text-muted">Instant deduction from your RideShare wallet.</span></div>
                     </div>
                     <div class="flex gap-12">
-                        <span style="font-size:1.4rem">📱</span>
+                        <span style="font-size:1.3rem;min-width:28px">📱</span>
                         <div><strong>UPI</strong><br><span class="text-muted">Pay via PhonePe, GPay, Paytm etc.</span></div>
                     </div>
                     <div class="flex gap-12">
-                        <span style="font-size:1.4rem">💵</span>
+                        <span style="font-size:1.3rem;min-width:28px">💵</span>
                         <div><strong>Cash</strong><br><span class="text-muted">Pay the driver directly in cash.</span></div>
                     </div>
                     <div class="flex gap-12">
-                        <span style="font-size:1.4rem">💳</span>
+                        <span style="font-size:1.3rem;min-width:28px">💳</span>
                         <div><strong>Card</strong><br><span class="text-muted">Credit / Debit card payment.</span></div>
                     </div>
                 </div>
             </div>
 
-            <div class="card" style="border-left:4px solid var(--info)">
-                <div class="card-title">🔔 Trigger Info</div>
-                <p class="text-muted" style="font-size:0.85rem">
+            <div class="card" style="border-left:4px solid var(--primary)">
+                <div class="card-title">Trigger Info</div>
+                <p class="text-muted" style="font-size:.85rem">
                     When you confirm payment, the MySQL trigger
                     <code>trg_update_trip_status</code> automatically updates the
                     trip status to <strong>Completed</strong>.
@@ -138,11 +164,7 @@
             </div>
         </div>
     </div>
-</div>
-
-<footer>
-    <strong>RideShare</strong> · 21CSC205P DBMS Mini Project
-</footer>
+</main>
 
 <script src="js/api.js"></script>
 <script>
@@ -154,16 +176,16 @@
         populateNav(user);
         loadWallet();
 
-        // Pre-fill from URL params (coming from trip_history.html)
         const params = new URLSearchParams(window.location.search);
         const tripId = params.get('trip');
         const fare   = params.get('fare');
         const driver = params.get('driver');
 
         if (tripId) {
-            document.getElementById('trip-id').value        = tripId;
+            document.getElementById('trip-id').value         = tripId;
             document.getElementById('disp-trip').textContent = '#' + tripId;
             document.getElementById('trip-id-group').classList.add('hidden');
+            checkAlreadyPaid(tripId);
         }
         if (fare) {
             tripFare = parseFloat(fare);
@@ -171,8 +193,27 @@
             document.getElementById('disp-fare').textContent  = '₹' + tripFare;
         }
         if (driver) {
-            document.getElementById('disp-driver').textContent = driver;
+            document.getElementById('disp-driver').textContent = decodeURIComponent(driver);
         }
+    }
+
+    async function checkAlreadyPaid(tripId) {
+        try {
+            const payments = await API.payments.trip(tripId);
+            if (!payments.length) return;
+            const p = payments[0];
+            document.getElementById('payment-section').innerHTML = `
+                <div class="card-title">Trip Payment</div>
+                <div class="alert alert-success" style="margin-bottom:16px">
+                    This trip has already been paid.
+                </div>
+                <div class="kv-row"><span class="kv-label">Amount</span><strong class="kv-value" style="color:var(--success)">₹${parseFloat(p.Amount).toFixed(2)}</strong></div>
+                <div class="kv-row" style="border-bottom:none;margin-bottom:16px;padding-bottom:0"><span class="kv-label">Mode</span><span class="kv-value">${p.Payment_Mode}</span></div>
+                <div class="flex gap-12">
+                    <a href="rating.html?trip=${tripId}" class="btn btn-outline">Rate Driver</a>
+                    <a href="trip_history.html" class="btn btn-primary">View Trips</a>
+                </div>`;
+        } catch (_) {}
     }
 
     async function loadWallet() {
@@ -221,25 +262,23 @@
         btn.disabled = true;
 
         try {
-            const data = await API.payments.pay({
+            await API.payments.pay({
                 trip_id:      tripId,
                 passenger_id: user.id,
                 amount:       parseFloat(amount),
                 payment_mode: mode
             });
 
-            // Show success
             document.getElementById('success-amount').textContent = `₹${amount}`;
             document.getElementById('success-mode').textContent   = mode;
             document.getElementById('payment-section').classList.add('hidden');
             document.getElementById('success-section').classList.remove('hidden');
 
-            // Update wallet display
             loadWallet();
 
         } catch (err) {
             showAlert(err.message, 'error');
-            btn.textContent = '✅ Confirm Payment';
+            btn.textContent = 'Confirm Payment';
             btn.disabled = false;
         }
     }

@@ -8,207 +8,228 @@
 </head>
 <body>
 
-<nav>
-    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
-    <ul class="nav-links">
-        <li><a href="admin_dashboard.html" class="active">🛡️ Admin</a></li>
-    </ul>
-    <div class="nav-user">
-        <span id="nav-user-name"></span>
-        <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <h2>RideShare Admin</h2>
+        <p id="nav-user-name"></p>
     </div>
-</nav>
+    <nav class="sidebar-nav" id="admin-nav">
+        <button onclick="showSection('overview')"   class="sidebar-link active" id="nav-overview">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Overview
+        </button>
+        <button onclick="showSection('passengers')" class="sidebar-link" id="nav-passengers">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Passengers
+        </button>
+        <button onclick="showSection('drivers')"    class="sidebar-link" id="nav-drivers">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Drivers
+        </button>
+        <button onclick="showSection('trips')"      class="sidebar-link" id="nav-trips">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            Trips
+        </button>
+        <button onclick="showSection('payments')"   class="sidebar-link" id="nav-payments">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Payments
+        </button>
+        <button onclick="showSection('tickets')"    class="sidebar-link" id="nav-tickets">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Support
+        </button>
+        <button onclick="showSection('promos')"     class="sidebar-link" id="nav-promos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            Promo Codes
+        </button>
+        <button onclick="showSection('analytics')"  class="sidebar-link" id="nav-analytics">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Analytics
+        </button>
+    </nav>
+    <div class="sidebar-footer">
+        <button onclick="logout()" class="sidebar-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+        </button>
+    </div>
+</aside>
 
-<div class="container">
-    <div class="page-title">🛡️ Admin Dashboard</div>
-    <div class="page-subtitle">Manage the entire RideShare platform from here.</div>
+<!-- Main Content -->
+<main class="main-content">
+    <div class="main-header">
+        <h1 id="section-heading">Admin Dashboard</h1>
+    </div>
 
     <div id="alert-box" class="alert"></div>
 
-    <!-- Stats Overview -->
-    <div class="stats-grid">
-        <div class="stat-card"><div class="stat-number" id="stat-passengers">—</div><div class="stat-label">Passengers</div></div>
-        <div class="stat-card success"><div class="stat-number" id="stat-drivers">—</div><div class="stat-label">Drivers</div></div>
-        <div class="stat-card warning"><div class="stat-number" id="stat-trips">—</div><div class="stat-label">Total Trips</div></div>
-        <div class="stat-card info"><div class="stat-number" id="stat-revenue">₹—</div><div class="stat-label">Total Revenue</div></div>
+    <!-- Stats (always visible) -->
+    <div class="stats-grid stats-grid-6" style="margin-bottom:28px;">
+        <div class="stat-card blue">
+            <div class="stat-body"><div class="stat-label">Total Users</div><div class="stat-number" id="stat-total-users">—</div></div>
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-body"><div class="stat-label">Total Trips</div><div class="stat-number" id="stat-trips">—</div></div>
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        </div>
+        <div class="stat-card orange">
+            <div class="stat-body"><div class="stat-label">Revenue</div><div class="stat-number" id="stat-revenue">₹—</div></div>
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-body"><div class="stat-label">Active Drivers</div><div class="stat-number" id="stat-drivers">—</div></div>
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-body"><div class="stat-label">Open Tickets</div><div class="stat-number" id="stat-tickets">—</div></div>
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        </div>
+        <div class="stat-card purple">
+            <div class="stat-body"><div class="stat-label">Active Promos</div><div class="stat-number" id="stat-promos">—</div></div>
+            <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+        </div>
     </div>
 
-    <!-- Tab Navigation -->
-    <div class="card" style="padding:0;overflow:hidden;">
-        <div style="display:flex;border-bottom:2px solid var(--border);background:var(--light);">
-            <button class="tab-btn active" onclick="showTab('passengers')">👥 Passengers</button>
-            <button class="tab-btn" onclick="showTab('drivers')">🚗 Drivers</button>
-            <button class="tab-btn" onclick="showTab('trips')">📋 Trips</button>
-            <button class="tab-btn" onclick="showTab('payments')">💳 Payments</button>
-            <button class="tab-btn" onclick="showTab('tickets')">🎫 Support</button>
-            <button class="tab-btn" onclick="showTab('promos')">🎁 Promos</button>
-            <button class="tab-btn" onclick="showTab('analytics')">📊 Analytics</button>
+    <!-- Overview -->
+    <div id="section-overview" class="section-panel active">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title" style="margin-bottom:0">Recent Activity</div>
+                <div class="search-bar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" placeholder="Search..." oninput="filterOverview(this.value)">
+                </div>
+            </div>
+            <div class="table-wrapper" id="overview-table">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
         </div>
+    </div>
 
-        <!-- Passengers Tab -->
-        <div id="tab-passengers" class="tab-content" style="padding:20px;">
-            <div class="flex-between mb-16">
-                <strong>Registered Passengers</strong>
-                <button onclick="loadPassengers()" class="btn btn-info btn-sm">🔄 Refresh</button>
+    <!-- Passengers -->
+    <div id="section-passengers" class="section-panel">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title" style="margin-bottom:0">Registered Passengers</div>
+                <button onclick="loadPassengers()" class="btn btn-outline btn-sm">Refresh</button>
             </div>
             <div class="table-wrapper" id="passengers-table">
                 <div class="loading"><div class="spinner"></div></div>
             </div>
         </div>
+    </div>
 
-        <!-- Drivers Tab -->
-        <div id="tab-drivers" class="tab-content hidden" style="padding:20px;">
-            <div class="flex-between mb-16">
-                <strong>Registered Drivers</strong>
-                <button onclick="loadDrivers()" class="btn btn-info btn-sm">🔄 Refresh</button>
+    <!-- Drivers -->
+    <div id="section-drivers" class="section-panel">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title" style="margin-bottom:0">Registered Drivers</div>
+                <button onclick="loadDrivers()" class="btn btn-outline btn-sm">Refresh</button>
             </div>
             <div class="table-wrapper" id="drivers-table">
                 <div class="loading"><div class="spinner"></div></div>
             </div>
         </div>
+    </div>
 
-        <!-- Trips Tab -->
-        <div id="tab-trips" class="tab-content hidden" style="padding:20px;">
-            <div class="flex-between mb-16">
-                <strong>All Trips (via Trip_Details_View)</strong>
-                <button onclick="loadTrips()" class="btn btn-info btn-sm">🔄 Refresh</button>
+    <!-- Trips -->
+    <div id="section-trips" class="section-panel">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title" style="margin-bottom:0">All Trips</div>
+                <button onclick="loadTrips()" class="btn btn-outline btn-sm">Refresh</button>
             </div>
             <div class="table-wrapper" id="trips-table">
                 <div class="loading"><div class="spinner"></div></div>
             </div>
         </div>
+    </div>
 
-        <!-- Payments Tab -->
-        <div id="tab-payments" class="tab-content hidden" style="padding:20px;">
-            <div class="flex-between mb-16">
-                <strong>All Payments</strong>
-                <button onclick="loadPayments()" class="btn btn-info btn-sm">🔄 Refresh</button>
+    <!-- Payments -->
+    <div id="section-payments" class="section-panel">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title" style="margin-bottom:0">All Payments</div>
+                <button onclick="loadPayments()" class="btn btn-outline btn-sm">Refresh</button>
             </div>
             <div class="table-wrapper" id="payments-table">
                 <div class="loading"><div class="spinner"></div></div>
             </div>
         </div>
+    </div>
 
-        <!-- Support Tickets Tab -->
-        <div id="tab-tickets" class="tab-content hidden" style="padding:20px;">
-            <div class="flex-between mb-16">
-                <strong>Support Tickets</strong>
-                <button onclick="loadTickets()" class="btn btn-info btn-sm">🔄 Refresh</button>
+    <!-- Support Tickets -->
+    <div id="section-tickets" class="section-panel">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title" style="margin-bottom:0">Support Tickets</div>
+                <button onclick="loadTickets()" class="btn btn-outline btn-sm">Refresh</button>
             </div>
             <div id="tickets-container">
                 <div class="loading"><div class="spinner"></div></div>
             </div>
         </div>
+    </div>
 
-        <!-- Promos Tab -->
-        <div id="tab-promos" class="tab-content hidden" style="padding:20px;">
-            <div class="grid-2">
-                <!-- Add Promo -->
-                <div>
-                    <strong class="mb-16" style="display:block;">➕ Add Promo Code</strong>
-                    <form id="promo-form" onsubmit="addPromo(event)">
-                        <div class="form-group">
-                            <label>Promo Code *</label>
-                            <input type="text" id="promo-code" placeholder="e.g. SAVE20" required style="text-transform:uppercase">
-                        </div>
-                        <div class="form-group">
-                            <label>Discount (%)</label>
-                            <input type="number" id="promo-discount" placeholder="e.g. 20" min="1" max="100" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Min Fare (₹)</label>
-                            <input type="number" id="promo-min" placeholder="e.g. 100" min="0" step="0.01" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label>Max Discount (₹)</label>
-                            <input type="number" id="promo-max" placeholder="e.g. 50" min="0" step="0.01" value="0">
-                        </div>
-                        <button type="submit" class="btn btn-accent btn-block">➕ Create Promo</button>
-                    </form>
-                </div>
-                <!-- Promo List -->
-                <div>
-                    <div class="flex-between mb-16">
-                        <strong>Active Promo Codes</strong>
-                        <button onclick="loadPromos()" class="btn btn-info btn-sm">🔄 Refresh</button>
-                    </div>
-                    <div id="promos-list">
-                        <div class="loading"><div class="spinner"></div></div>
-                    </div>
-                </div>
+    <!-- Promos -->
+    <div id="section-promos" class="section-panel">
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">Add Promo Code</div>
+                <form id="promo-form" onsubmit="addPromo(event)">
+                    <div class="form-group"><label>Promo Code</label><input type="text" id="promo-code" class="no-icon" placeholder="e.g. SAVE20" required style="text-transform:uppercase"></div>
+                    <div class="form-group"><label>Discount (%)</label><input type="number" id="promo-discount" class="no-icon" placeholder="e.g. 20" min="1" max="100" required></div>
+                    <div class="form-group"><label>Min Fare (₹)</label><input type="number" id="promo-min" class="no-icon" placeholder="e.g. 100" min="0" step="0.01" value="0"></div>
+                    <div class="form-group"><label>Max Discount (₹)</label><input type="number" id="promo-max" class="no-icon" placeholder="e.g. 50" min="0" step="0.01" value="0"></div>
+                    <button type="submit" class="btn btn-primary btn-block">Create Promo</button>
+                </form>
             </div>
-        </div>
-
-        <!-- Analytics Tab -->
-        <div id="tab-analytics" class="tab-content hidden" style="padding:20px;">
-            <div class="grid-2">
-                <div>
-                    <strong class="mb-16" style="display:block;">📊 Platform Statistics</strong>
-                    <div id="analytics-data">
-                        <div class="loading"><div class="spinner"></div></div>
-                    </div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title" style="margin-bottom:0">Active Promo Codes</div>
+                    <button onclick="loadPromos()" class="btn btn-outline btn-sm">Refresh</button>
                 </div>
-                <div>
-                    <strong class="mb-16" style="display:block;">💰 High Value Payments (View)</strong>
-                    <div id="high-payments-data">
-                        <div class="loading"><div class="spinner"></div></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-24">
-                <strong class="mb-16" style="display:block;">🚗 Above-Average Fare Trips (Subquery)</strong>
-                <div class="table-wrapper" id="above-avg-data">
-                    <div class="loading"><div class="spinner"></div></div>
-                </div>
-            </div>
-
-            <div class="mt-24">
-                <strong class="mb-16" style="display:block;">📍 Long Distance Trips (UNION)</strong>
-                <div class="table-wrapper" id="long-trips-data">
+                <div id="promos-list">
                     <div class="loading"><div class="spinner"></div></div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<footer>
-    <strong>RideShare</strong> · 21CSC205P DBMS Mini Project
-</footer>
+    <!-- Analytics -->
+    <div id="section-analytics" class="section-panel">
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">Platform Statistics</div>
+                <div id="analytics-data"><div class="loading"><div class="spinner"></div></div></div>
+            </div>
+            <div class="card">
+                <div class="card-title">High Value Payments</div>
+                <div id="high-payments-data"><div class="loading"><div class="spinner"></div></div></div>
+            </div>
+        </div>
+        <div class="card mt-16">
+            <div class="card-title">Above-Average Fare Trips (Subquery)</div>
+            <div class="table-wrapper" id="above-avg-data"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+        <div class="card mt-16">
+            <div class="card-title">Long Distance Trips (UNION)</div>
+            <div class="table-wrapper" id="long-trips-data"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+    </div>
 
-<style>
-.tab-btn {
-    padding: 14px 20px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 0.88rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-    white-space: nowrap;
-}
-.tab-btn:hover { color: var(--primary); background: rgba(37,99,235,0.05); }
-.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: white; }
-.tab-content { display: block; }
-.tab-content.hidden { display: none !important; }
-.resolve-btn { font-size:0.8rem; padding:4px 10px; }
-.mt-24 { margin-top: 24px; }
-</style>
+</main>
 
 <script src="js/api.js"></script>
 <script>
     const user = requireAuth(['admin']);
-    if (user) {
-        populateNav(user);
-        loadStats();
-        loadPassengers();
-    }
+    let loadedSections = new Set(['overview']);
+    let overviewTrips = [];
 
-    /* ── Tab switching ── */
-    const tabLoaders = {
+    const sectionLoaders = {
+        overview:   loadOverview,
         passengers: loadPassengers,
         drivers:    loadDrivers,
         trips:      loadTrips,
@@ -218,33 +239,92 @@
         analytics:  loadAnalytics
     };
 
-    let loadedTabs = new Set(['passengers']);
+    const sectionTitles = {
+        overview: 'Admin Dashboard', passengers: 'Passengers', drivers: 'Drivers',
+        trips: 'Trips', payments: 'Payments', tickets: 'Support Tickets',
+        promos: 'Promo Codes', analytics: 'Analytics'
+    };
 
-    function showTab(name) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+    if (user) {
+        populateNav(user);
+        loadStats();
+        loadOverview();
+    }
 
-        event.target.classList.add('active');
-        document.getElementById('tab-' + name).classList.remove('hidden');
+    function showSection(name) {
+        document.querySelectorAll('#admin-nav .sidebar-link').forEach(b => b.classList.remove('active'));
+        document.getElementById('nav-' + name).classList.add('active');
 
-        if (!loadedTabs.has(name)) {
-            loadedTabs.add(name);
-            tabLoaders[name]();
+        document.querySelectorAll('.section-panel').forEach(s => s.classList.remove('active'));
+        document.getElementById('section-' + name).classList.add('active');
+
+        document.getElementById('section-heading').textContent = sectionTitles[name] || 'Admin Dashboard';
+
+        if (!loadedSections.has(name)) {
+            loadedSections.add(name);
+            sectionLoaders[name]?.();
         }
     }
 
-    /* ── Stats ── */
     async function loadStats() {
         try {
             const s = await API.admin.stats();
-            document.getElementById('stat-passengers').textContent = s.total_passengers || 0;
-            document.getElementById('stat-drivers').textContent    = s.total_drivers    || 0;
-            document.getElementById('stat-trips').textContent      = s.total_trips      || 0;
-            document.getElementById('stat-revenue').textContent    = s.total_revenue ? '₹' + parseFloat(s.total_revenue).toFixed(2) : '₹0';
+            const total = (s.total_passengers || 0) + (s.total_drivers || 0);
+            document.getElementById('stat-total-users').textContent = total;
+            document.getElementById('stat-trips').textContent   = s.total_trips || 0;
+            document.getElementById('stat-revenue').textContent = s.total_revenue ? '₹' + parseFloat(s.total_revenue).toFixed(0) : '₹0';
+            document.getElementById('stat-drivers').textContent = s.total_drivers || 0;
+            document.getElementById('stat-tickets').textContent = s.open_tickets || 0;
         } catch (err) { console.error(err); }
+        try {
+            const promos = await API.admin.promos();
+            document.getElementById('stat-promos').textContent = promos.length;
+        } catch (_) {}
     }
 
-    /* ── Passengers ── */
+    async function loadOverview() {
+        try {
+            overviewTrips = await API.admin.trips();
+            renderOverviewTable(overviewTrips);
+        } catch (err) {
+            document.getElementById('overview-table').innerHTML = `<p class="text-muted">Error: ${err.message}</p>`;
+        }
+    }
+
+    function renderOverviewTable(rows) {
+        const container = document.getElementById('overview-table');
+        if (!rows.length) { container.innerHTML = '<div class="empty-state"><p>No trips yet.</p></div>'; return; }
+        container.innerHTML = `
+            <table>
+                <thead><tr><th>Trip #</th><th>Passenger</th><th>Driver</th><th>Fare</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                    ${rows.map(t => `
+                        <tr>
+                            <td class="table-link">#${t.Trip_ID}</td>
+                            <td>${t.Passenger_Name || '—'}</td>
+                            <td>${t.Driver_Name || '—'}</td>
+                            <td>${t.Fare ? '₹' + t.Fare : '—'}</td>
+                            <td>${statusBadge(t.Status)}</td>
+                            <td>
+                                <span style="cursor:pointer;color:var(--primary);margin-right:10px;" title="View">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </span>
+                            </td>
+                        </tr>`).join('')}
+                </tbody>
+            </table>`;
+    }
+
+    function filterOverview(q) {
+        q = q.toLowerCase();
+        const filtered = overviewTrips.filter(t =>
+            (t.Passenger_Name || '').toLowerCase().includes(q) ||
+            (t.Driver_Name    || '').toLowerCase().includes(q) ||
+            String(t.Trip_ID).includes(q)
+        );
+        renderOverviewTable(filtered);
+    }
+
     async function loadPassengers() {
         const container = document.getElementById('passengers-table');
         try {
@@ -263,14 +343,12 @@
                                 <td>${p.City || '—'}</td>
                                 <td style="color:var(--success)">${p.Wallet_Balance != null ? '₹' + parseFloat(p.Wallet_Balance).toFixed(2) : '—'}</td>
                                 <td>${p.Created_At ? formatDate(p.Created_At) : '—'}</td>
-                            </tr>
-                        `).join('')}
+                            </tr>`).join('')}
                     </tbody>
                 </table>`;
         } catch (err) { container.innerHTML = `<p class="text-muted">Error: ${err.message}</p>`; }
     }
 
-    /* ── Drivers ── */
     async function loadDrivers() {
         const container = document.getElementById('drivers-table');
         try {
@@ -278,7 +356,7 @@
             if (!rows.length) { container.innerHTML = '<div class="empty-state"><p>No drivers yet.</p></div>'; return; }
             container.innerHTML = `
                 <table>
-                    <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>License</th><th>Vehicle</th><th>Plate</th><th>Available</th></tr></thead>
+                    <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>License</th><th>Vehicle</th><th>Available</th></tr></thead>
                     <tbody>
                         ${rows.map(d => `
                             <tr>
@@ -288,16 +366,13 @@
                                 <td>${d.Phone_Number}</td>
                                 <td>${d.License_Number}</td>
                                 <td>${d.Vehicle_Model || '—'} ${d.Vehicle_Type || ''}</td>
-                                <td>${d.License_Plate || '—'}</td>
                                 <td>${d.Is_Available ? '<span class="badge badge-success">Yes</span>' : '<span class="badge badge-warning">On Trip</span>'}</td>
-                            </tr>
-                        `).join('')}
+                            </tr>`).join('')}
                     </tbody>
                 </table>`;
         } catch (err) { container.innerHTML = `<p class="text-muted">Error: ${err.message}</p>`; }
     }
 
-    /* ── Trips ── */
     async function loadTrips() {
         const container = document.getElementById('trips-table');
         try {
@@ -305,26 +380,23 @@
             if (!rows.length) { container.innerHTML = '<div class="empty-state"><p>No trips yet.</p></div>'; return; }
             container.innerHTML = `
                 <table>
-                    <thead><tr><th>#</th><th>Passenger</th><th>Driver</th><th>Route</th><th>Distance</th><th>Fare</th><th>Status</th><th>Date</th></tr></thead>
+                    <thead><tr><th>#</th><th>Passenger</th><th>Driver</th><th>Route</th><th>Fare</th><th>Status</th><th>Date</th></tr></thead>
                     <tbody>
                         ${rows.map(t => `
                             <tr>
-                                <td><strong>#${t.Trip_ID}</strong></td>
+                                <td class="table-link">#${t.Trip_ID}</td>
                                 <td>${t.Passenger_Name || '—'}</td>
                                 <td>${t.Driver_Name || '—'}</td>
-                                <td style="font-size:0.82rem">${t.Pickup_Address || '—'} → ${t.Drop_Address || '—'}</td>
-                                <td>${t.Distance ? t.Distance + ' km' : '—'}</td>
+                                <td style="font-size:.82rem">${t.Pickup_Address || '—'} → ${t.Drop_Address || '—'}</td>
                                 <td>${t.Fare ? '₹' + t.Fare : '—'}</td>
                                 <td>${statusBadge(t.Status)}</td>
                                 <td>${formatDate(t.Start_Time)}</td>
-                            </tr>
-                        `).join('')}
+                            </tr>`).join('')}
                     </tbody>
                 </table>`;
         } catch (err) { container.innerHTML = `<p class="text-muted">Error: ${err.message}</p>`; }
     }
 
-    /* ── Payments ── */
     async function loadPayments() {
         const container = document.getElementById('payments-table');
         try {
@@ -343,72 +415,60 @@
                                 <td>${p.Payment_Mode}</td>
                                 <td>${statusBadge(p.Payment_Status)}</td>
                                 <td>${formatDate(p.Payment_Date)}</td>
-                            </tr>
-                        `).join('')}
+                            </tr>`).join('')}
                     </tbody>
                 </table>`;
         } catch (err) { container.innerHTML = `<p class="text-muted">Error: ${err.message}</p>`; }
     }
 
-    /* ── Support Tickets ── */
     async function loadTickets() {
         const container = document.getElementById('tickets-container');
         try {
             const rows = await API.admin.tickets();
             if (!rows.length) { container.innerHTML = '<div class="empty-state"><p>No tickets yet.</p></div>'; return; }
-
             container.innerHTML = rows.map(t => `
                 <div style="border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
                     <div class="flex-between mb-8">
                         <div>
                             <strong>#${t.Ticket_ID}</strong>
-                            <span class="text-muted" style="margin-left:10px;font-size:0.82rem">${t.User_Type} · ID ${t.User_ID}</span>
+                            <span class="text-muted" style="margin-left:10px;font-size:.82rem">${t.User_Type} · ID ${t.User_ID}</span>
                         </div>
                         <div class="flex gap-8">
                             ${statusBadge(t.Status)}
-                            ${t.Status === 'Open' ? `
-                                <button onclick="resolveTicket(${t.Ticket_ID}, this)" class="btn btn-success resolve-btn">✅ Resolve</button>
-                            ` : ''}
+                            ${t.Status === 'Open' ? `<button onclick="resolveTicket(${t.Ticket_ID}, this)" class="btn btn-success btn-sm">Resolve</button>` : ''}
                         </div>
                     </div>
-                    <p style="font-size:0.88rem;color:var(--text);margin:4px 0">${t.Issue_Description}</p>
-                    <div class="text-muted" style="font-size:0.78rem;margin-top:6px">${formatDate(t.Created_At)}</div>
-                </div>
-            `).join('');
+                    <p style="font-size:.88rem;color:var(--text)">${t.Issue_Description}</p>
+                    <div class="text-muted mt-8" style="font-size:.78rem">${formatDate(t.Created_At)}</div>
+                </div>`).join('');
         } catch (err) { container.innerHTML = `<p class="text-muted">Error: ${err.message}</p>`; }
     }
 
     async function resolveTicket(ticketId, btn) {
-        btn.disabled = true;
-        btn.textContent = '…';
+        btn.disabled = true; btn.textContent = '…';
         try {
             await API.admin.resolveTicket(ticketId);
             showAlert('Ticket #' + ticketId + ' resolved!', 'success');
             loadTickets();
         } catch (err) {
             showAlert(err.message, 'error');
-            btn.disabled = false;
-            btn.textContent = '✅ Resolve';
+            btn.disabled = false; btn.textContent = 'Resolve';
         }
     }
 
-    /* ── Promos ── */
     async function loadPromos() {
         const container = document.getElementById('promos-list');
         try {
             const rows = await API.admin.promos();
-            if (!rows.length) { container.innerHTML = '<div class="empty-state"><div class="icon">🎁</div><p>No promos yet.</p></div>'; return; }
+            if (!rows.length) { container.innerHTML = '<div class="empty-state"><p>No promos yet.</p></div>'; return; }
             container.innerHTML = rows.map(p => `
-                <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px;">
+                <div class="promo-chip">
                     <div class="flex-between">
-                        <strong style="color:var(--accent);font-size:1.1rem">${p.Code}</strong>
+                        <span class="promo-code">${p.Code}</span>
                         <span class="badge badge-success">${p.Discount_Percentage}% OFF</span>
                     </div>
-                    <div class="text-muted mt-8" style="font-size:0.82rem">
-                        Min fare: ₹${p.Min_Fare_Amount || 0} · Max discount: ₹${p.Max_Discount_Amount || 0}
-                    </div>
-                </div>
-            `).join('');
+                    <div class="promo-desc mt-4">Min fare: ₹${p.Min_Fare_Amount || 0} · Max discount: ₹${p.Max_Discount_Amount || 0}</div>
+                </div>`).join('');
         } catch (err) { container.innerHTML = `<p class="text-muted">Error: ${err.message}</p>`; }
     }
 
@@ -418,18 +478,14 @@
         const discount = document.getElementById('promo-discount').value;
         const minFare  = document.getElementById('promo-min').value || 0;
         const maxDisc  = document.getElementById('promo-max').value || 0;
-
         try {
             await API.admin.createPromo({ code, discount_percentage: parseFloat(discount), min_fare: parseFloat(minFare), max_discount: parseFloat(maxDisc) });
             showAlert('Promo code ' + code + ' created!', 'success');
             document.getElementById('promo-form').reset();
             loadPromos();
-        } catch (err) {
-            showAlert(err.message, 'error');
-        }
+        } catch (err) { showAlert(err.message, 'error'); }
     }
 
-    /* ── Analytics ── */
     async function loadAnalytics() {
         loadDetailedStats();
         loadHighPayments();
@@ -442,7 +498,7 @@
         try {
             const s = await API.admin.stats();
             container.innerHTML = `
-                <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;flex-direction:column;gap:8px;">
                     ${statRow('Total Passengers', s.total_passengers || 0)}
                     ${statRow('Total Drivers', s.total_drivers || 0)}
                     ${statRow('Total Trips', s.total_trips || 0)}
@@ -451,24 +507,18 @@
                     ${statRow('Avg Fare', s.avg_fare ? '₹' + parseFloat(s.avg_fare).toFixed(2) : '—')}
                     ${statRow('Open Tickets', s.open_tickets || 0)}
                 </div>
-                <div class="mt-24" style="border-top:1px solid var(--border);padding-top:16px;">
-                    <strong class="mb-12" style="display:block;">Trips per Driver (Aggregate)</strong>
+                <div class="mt-20" style="border-top:1px solid var(--border);padding-top:16px;">
+                    <strong style="font-size:.85rem;display:block;margin-bottom:10px;color:var(--muted)">TRIPS PER DRIVER</strong>
                     ${(s.driver_trips || []).map(d => `
-                        <div class="flex-between mb-8" style="font-size:0.88rem">
-                            <span>${d.Driver_Name}</span>
-                            <strong>${d.Trip_Count} trips</strong>
-                        </div>
-                    `).join('') || '<p class="text-muted">No data.</p>'}
-                </div>
-            `;
+                        <div class="flex-between mb-8" style="font-size:.875rem">
+                            <span>${d.Driver_Name}</span><strong>${d.Trip_Count} trips</strong>
+                        </div>`).join('') || '<p class="text-muted">No data.</p>'}
+                </div>`;
         } catch (err) { container.innerHTML = `<p class="text-muted">Error: ${err.message}</p>`; }
     }
 
     function statRow(label, value) {
-        return `<div class="flex-between" style="padding:10px 14px;background:var(--light);border-radius:6px;">
-            <span class="text-muted">${label}</span>
-            <strong>${value}</strong>
-        </div>`;
+        return `<div class="kv-row"><span class="kv-label">${label}</span><span class="kv-value">${value}</span></div>`;
     }
 
     async function loadHighPayments() {
@@ -477,14 +527,10 @@
             const rows = await API.admin.highPayments();
             if (!rows.length) { container.innerHTML = '<p class="text-muted">No high payments yet.</p>'; return; }
             container.innerHTML = rows.map(p => `
-                <div class="flex-between mb-8" style="padding:10px 14px;background:var(--light);border-radius:6px;font-size:0.88rem">
-                    <div>
-                        <strong>Trip #${p.Trip_ID}</strong>
-                        <span class="text-muted" style="margin-left:8px">${p.Payment_Mode}</span>
-                    </div>
+                <div class="kv-row">
+                    <div><strong>Trip #${p.Trip_ID}</strong><span class="text-muted" style="margin-left:8px">${p.Payment_Mode}</span></div>
                     <strong style="color:var(--success)">₹${parseFloat(p.Amount).toFixed(2)}</strong>
-                </div>
-            `).join('');
+                </div>`).join('');
         } catch (err) { container.innerHTML = `<p class="text-muted">Error: ${err.message}</p>`; }
     }
 
@@ -492,21 +538,16 @@
         const container = document.getElementById('above-avg-data');
         try {
             const rows = await API.trips.aboveAvg();
-            if (!rows.length) { container.innerHTML = '<div class="empty-state"><p>No trips above average fare yet.</p></div>'; return; }
+            if (!rows.length) { container.innerHTML = '<div class="empty-state"><p>No above-average trips yet.</p></div>'; return; }
             container.innerHTML = `
                 <table>
                     <thead><tr><th>Trip #</th><th>Passenger</th><th>Driver</th><th>Fare</th><th>Distance</th><th>Date</th></tr></thead>
-                    <tbody>
-                        ${rows.map(t => `
-                            <tr>
-                                <td>#${t.Trip_ID}</td>
-                                <td>${t.Passenger_Name || '—'}</td>
-                                <td>${t.Driver_Name || '—'}</td>
-                                <td style="color:var(--success);font-weight:600">₹${t.Fare}</td>
-                                <td>${t.Distance ? t.Distance + ' km' : '—'}</td>
-                                <td>${formatDate(t.Start_Time)}</td>
-                            </tr>
-                        `).join('')}
+                    <tbody>${rows.map(t => `
+                        <tr>
+                            <td>#${t.Trip_ID}</td><td>${t.Passenger_Name || '—'}</td><td>${t.Driver_Name || '—'}</td>
+                            <td style="color:var(--success);font-weight:600">₹${t.Fare}</td>
+                            <td>${t.Distance ? t.Distance + ' km' : '—'}</td><td>${formatDate(t.Start_Time)}</td>
+                        </tr>`).join('')}
                     </tbody>
                 </table>`;
         } catch (err) { container.innerHTML = `<p class="text-muted">Error: ${err.message}</p>`; }
@@ -520,17 +561,13 @@
             container.innerHTML = `
                 <table>
                     <thead><tr><th>Trip #</th><th>Passenger</th><th>Driver</th><th>Distance</th><th>Fare</th><th>Type</th></tr></thead>
-                    <tbody>
-                        ${rows.map(t => `
-                            <tr>
-                                <td>#${t.Trip_ID}</td>
-                                <td>${t.Passenger_Name || '—'}</td>
-                                <td>${t.Driver_Name || '—'}</td>
-                                <td><strong>${t.Distance} km</strong></td>
-                                <td>${t.Fare ? '₹' + t.Fare : '—'}</td>
-                                <td><span class="badge badge-info">${t.Trip_Type}</span></td>
-                            </tr>
-                        `).join('')}
+                    <tbody>${rows.map(t => `
+                        <tr>
+                            <td>#${t.Trip_ID}</td><td>${t.Passenger_Name || '—'}</td><td>${t.Driver_Name || '—'}</td>
+                            <td><strong>${t.Distance} km</strong></td>
+                            <td>${t.Fare ? '₹' + t.Fare : '—'}</td>
+                            <td><span class="badge badge-info">${t.Trip_Type}</span></td>
+                        </tr>`).join('')}
                     </tbody>
                 </table>`;
         } catch (err) { container.innerHTML = `<p class="text-muted">Error: ${err.message}</p>`; }

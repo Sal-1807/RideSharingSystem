@@ -8,115 +8,76 @@
 </head>
 <body>
 
-<!-- Navigation -->
-<nav>
-    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
-    <ul class="nav-links">
-        <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="login.html">Login</a></li>
-        <li><a href="register.html">Register</a></li>
-    </ul>
-    <div class="nav-user" id="nav-actions">
-        <!-- Updated by JS if logged in -->
-    </div>
-</nav>
-
-<!-- Hero Section -->
+<!-- Hero -->
 <section class="hero">
-    <h1>Welcome to <span>RideShare</span></h1>
-    <p>A complete ride sharing platform – book rides, track trips, and manage payments with ease.</p>
+    <h1>Your Ride, Your Way</h1>
+    <p>Book rides, track trips, manage payments — all in one place.</p>
     <div class="hero-buttons">
-        <a href="register.html" class="btn btn-accent">🚀 Get Started</a>
-        <a href="login.html" class="btn btn-light">🔑 Login</a>
+        <a href="register.html" class="btn btn-primary btn-lg">Get Started</a>
+        <a href="login.html"   class="btn btn-ghost btn-lg">Login</a>
     </div>
 </section>
 
-<!-- Features Section -->
+<!-- Feature Cards -->
 <section class="features-section">
-    <h2 class="page-title text-center">What We Offer</h2>
-    <p class="page-subtitle text-center">Everything you need for a seamless ride sharing experience</p>
-
     <div class="features-grid">
-        <div class="feature-card">
-            <div class="feature-icon">👤</div>
-            <h3>Passenger Portal</h3>
-            <p>Book rides, track your trips, manage wallet, apply promo codes, and rate your drivers.</p>
-            <br>
-            <a href="register.html" class="btn btn-primary btn-sm">Register as Passenger</a>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">🚖</div>
-            <h3>Driver Portal</h3>
-            <p>Accept ride requests, start and end trips, view earnings, and track your performance.</p>
-            <br>
-            <a href="register.html" class="btn btn-success btn-sm">Register as Driver</a>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">🛡️</div>
-            <h3>Admin Dashboard</h3>
-            <p>Monitor all passengers, drivers, trips, payments, and manage support tickets and promos.</p>
-            <br>
-            <a href="login.html" class="btn btn-info btn-sm">Admin Login</a>
-        </div>
-    </div>
 
-    <!-- Project Info -->
-    <div class="card mt-24">
-        <div class="card-title">📚 About This Project</div>
-        <div class="grid-3">
-            <div>
-                <strong>Project:</strong><br>
-                <span class="text-muted">21CSC205P DBMS Mini Project</span>
+        <div class="feature-card">
+            <div class="feature-icon-wrap blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                    <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                </svg>
             </div>
-            <div>
-                <strong>Team:</strong><br>
-                <span class="text-muted">Saloni Palo (RA2411003010540)<br>Voona Sarayu (RA2411003010537)</span>
-            </div>
-            <div>
-                <strong>Tech Stack:</strong><br>
-                <span class="text-muted">Node.js · Express · MySQL · HTML/CSS/JS</span>
-            </div>
+            <h3>Passenger Portal</h3>
+            <p>Book rides, track trips, and manage your journeys</p>
+            <a href="register.html" class="btn btn-primary btn-sm">Explore</a>
         </div>
-        <div class="mt-16">
-            <strong>Database Features Implemented:</strong>
-            <div class="grid-2 mt-8">
-                <ul style="list-style:inside;color:var(--muted);font-size:0.9rem;line-height:2">
-                    <li>15+ Relational Tables with FK constraints</li>
-                    <li>Aggregate Functions (COUNT, AVG, SUM, MAX, MIN)</li>
-                    <li>Complex JOINs (INNER JOIN across 4+ tables)</li>
-                    <li>Subqueries (above-average fare trips)</li>
-                </ul>
-                <ul style="list-style:inside;color:var(--muted);font-size:0.9rem;line-height:2">
-                    <li>3 SQL Views (Trip_Details_View, High_Payments, Trip_Ratings)</li>
-                    <li>3 Triggers (status update, wallet deduction, rating validation)</li>
-                    <li>3 Stored Procedures with Cursors</li>
-                    <li>UNION set operations</li>
-                </ul>
+
+        <div class="feature-card">
+            <div class="feature-icon-wrap green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
             </div>
+            <h3>Driver Portal</h3>
+            <p>Accept rides, track earnings, and manage trips</p>
+            <a href="register.html" class="btn btn-success btn-sm">Explore</a>
         </div>
+
+        <div class="feature-card">
+            <div class="feature-icon-wrap purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+            </div>
+            <h3>Admin Dashboard</h3>
+            <p>Manage users, trips, and system settings</p>
+            <a href="login.html" class="btn btn-purple btn-sm">Explore</a>
+        </div>
+
     </div>
 </section>
 
-<footer>
-    <strong>RideShare</strong> · 21CSC205P Database Management Systems Mini Project · SRM Institute of Science and Technology
+<footer class="landing-footer">
+    RideShare DBMS Project &nbsp;|&nbsp; Built with HTML/CSS/JS &nbsp;|&nbsp; Team Academic 2024
 </footer>
 
 <script src="js/api.js"></script>
 <script>
-    // If user is already logged in, show dashboard link in nav
     const user = getUser();
     if (user) {
-        const actionsDiv = document.getElementById('nav-actions');
         const dashLinks = {
             passenger: '/passenger_dashboard.html',
             driver:    '/driver_dashboard.html',
             admin:     '/admin_dashboard.html'
         };
-        actionsDiv.innerHTML = `
-            <span>👤 ${user.name}</span>
-            <a href="${dashLinks[user.user_type]}" class="btn btn-primary btn-sm">Dashboard</a>
-            <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
-        `;
+        if (dashLinks[user.user_type]) {
+            window.location.href = dashLinks[user.user_type];
+        }
     }
 </script>
 </body>

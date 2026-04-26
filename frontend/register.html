@@ -11,116 +11,104 @@
     <div class="auth-card" style="max-width:520px">
 
         <div class="auth-logo">
-            <h1>🚗 Ride<span>Share</span></h1>
-            <p>Create your account</p>
-        </div>
-
-        <!-- Register as Passenger or Driver -->
-        <div class="auth-tabs">
-            <button class="auth-tab active" onclick="showForm('passenger', this)">🧑 Passenger</button>
-            <button class="auth-tab"        onclick="showForm('driver', this)">🚖 Driver</button>
+            <h2>Create Account</h2>
+            <p>Join RideShare today</p>
         </div>
 
         <div id="alert-box" class="alert"></div>
 
-        <!-- ── Passenger Registration Form ── -->
-        <form id="passenger-form" onsubmit="registerPassenger(event)">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Full Name *</label>
-                    <input type="text" id="p-name" placeholder="Aarav Sharma" required>
-                </div>
-                <div class="form-group">
-                    <label>Phone *</label>
-                    <input type="tel" id="p-phone" placeholder="9876543210" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Email *</label>
-                <input type="email" id="p-email" placeholder="aarav@gmail.com" required>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Password *</label>
-                    <input type="password" id="p-password" placeholder="Min 6 characters" required minlength="6">
-                </div>
-                <div class="form-group">
-                    <label>Confirm Password *</label>
-                    <input type="password" id="p-confirm" placeholder="Repeat password" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block" id="p-btn">
-                    🚀 Register as Passenger
-                </button>
-            </div>
-            <p class="text-muted text-center" style="font-size:0.8rem">
-                ✅ A welcome wallet of <strong>₹500</strong> will be added automatically!
-            </p>
-        </form>
+        <form id="register-form" onsubmit="handleRegister(event)">
 
-        <!-- ── Driver Registration Form ── -->
-        <form id="driver-form" onsubmit="registerDriver(event)" class="hidden">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Full Name *</label>
-                    <input type="text" id="d-name" placeholder="Suresh Kumar" required>
-                </div>
-                <div class="form-group">
-                    <label>Phone *</label>
-                    <input type="tel" id="d-phone" placeholder="9000011111" required>
-                </div>
-            </div>
             <div class="form-group">
-                <label>Email *</label>
-                <input type="email" id="d-email" placeholder="suresh@gmail.com" required>
-            </div>
-            <div class="form-group">
-                <label>Driving License Number *</label>
-                <input type="text" id="d-license" placeholder="DL12345" required>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Vehicle Model</label>
-                    <input type="text" id="d-vehicle" placeholder="Swift Dzire">
-                </div>
-                <div class="form-group">
-                    <label>Registration No.</label>
-                    <input type="text" id="d-regno" placeholder="TS09AB1234">
+                <label>Full Name</label>
+                <div class="input-wrap">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <input type="text" id="reg-name" placeholder="John Doe" required>
                 </div>
             </div>
+
             <div class="form-group">
-                <label>Vehicle Type</label>
-                <select id="d-type">
-                    <option value="1">Sedan</option>
-                    <option value="2">SUV</option>
-                    <option value="3">Mini</option>
-                    <option value="4">Auto</option>
+                <label>Email Address</label>
+                <div class="input-wrap">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                    <input type="email" id="reg-email" placeholder="you@example.com" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number</label>
+                <div class="input-wrap">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.45 2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.53 6.53l1.41-1.41a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                    <input type="tel" id="reg-phone" placeholder="+91 98765 43210" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>User Type</label>
+                <select id="reg-type" class="no-icon" onchange="toggleDriverFields()">
+                    <option value="passenger">Passenger</option>
+                    <option value="driver">Driver</option>
                 </select>
             </div>
-            <div class="form-row">
+
+            <!-- Driver-specific fields -->
+            <div id="driver-fields" class="hidden">
                 <div class="form-group">
-                    <label>Password *</label>
-                    <input type="password" id="d-password" placeholder="Min 6 characters" required minlength="6">
+                    <label>Driving License Number</label>
+                    <input type="text" id="reg-license" class="no-icon" placeholder="DL12345">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Vehicle Model</label>
+                        <input type="text" id="reg-vehicle" class="no-icon" placeholder="Swift Dzire">
+                    </div>
+                    <div class="form-group">
+                        <label>Registration No.</label>
+                        <input type="text" id="reg-regno" class="no-icon" placeholder="TS09AB1234">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Confirm Password *</label>
-                    <input type="password" id="d-confirm" placeholder="Repeat password" required>
+                    <label>Vehicle Type</label>
+                    <select id="reg-vtype" class="no-icon">
+                        <option value="1">Sedan</option>
+                        <option value="2">SUV</option>
+                        <option value="3">Mini</option>
+                        <option value="4">Auto</option>
+                    </select>
                 </div>
             </div>
+
             <div class="form-group">
-                <button type="submit" class="btn btn-success btn-block" id="d-btn">
-                    🚖 Register as Driver
-                </button>
+                <label>Password</label>
+                <div class="input-wrap">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <input type="password" id="reg-password" placeholder="••••••••" required minlength="6">
+                </div>
             </div>
+
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <div class="input-wrap">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <input type="password" id="reg-confirm" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="reg-btn">Create Account</button>
         </form>
 
-        <div class="auth-switch">
-            Already have an account? <a href="login.html">Login here</a>
-        </div>
-        <div class="auth-switch mt-8">
-            <a href="index.html">← Back to Home</a>
-        </div>
+        <div class="auth-switch">Already have an account? <a href="login.html">Sign in</a></div>
+        <div class="auth-switch mt-8"><a href="index.html">← Back to Home</a></div>
     </div>
 </div>
 
@@ -128,68 +116,48 @@
 <script>
     redirectIfLoggedIn();
 
-    function showForm(type, btn) {
-        document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById('passenger-form').classList.toggle('hidden', type !== 'passenger');
-        document.getElementById('driver-form').classList.toggle('hidden', type !== 'driver');
+    function toggleDriverFields() {
+        const type = document.getElementById('reg-type').value;
+        document.getElementById('driver-fields').classList.toggle('hidden', type !== 'driver');
+        document.getElementById('reg-btn').textContent =
+            type === 'driver' ? 'Register as Driver' : 'Create Account';
     }
 
-    async function registerPassenger(e) {
+    async function handleRegister(e) {
         e.preventDefault();
-        const name     = document.getElementById('p-name').value.trim();
-        const phone    = document.getElementById('p-phone').value.trim();
-        const email    = document.getElementById('p-email').value.trim();
-        const password = document.getElementById('p-password').value;
-        const confirm  = document.getElementById('p-confirm').value;
-        const btn      = document.getElementById('p-btn');
+        const type     = document.getElementById('reg-type').value;
+        const name     = document.getElementById('reg-name').value.trim();
+        const email    = document.getElementById('reg-email').value.trim();
+        const phone    = document.getElementById('reg-phone').value.trim();
+        const password = document.getElementById('reg-password').value;
+        const confirm  = document.getElementById('reg-confirm').value;
+        const btn      = document.getElementById('reg-btn');
 
-        if (password !== confirm)
-            return showAlert('Passwords do not match!', 'error');
+        if (password !== confirm) return showAlert('Passwords do not match!', 'error');
 
         btn.textContent = 'Registering…';
         btn.disabled = true;
 
         try {
-            const data = await API.auth.registerPassenger({ name, phone, email, password });
+            let data;
+            if (type === 'passenger') {
+                data = await API.auth.registerPassenger({ name, phone, email, password });
+            } else {
+                const license_no      = document.getElementById('reg-license').value.trim();
+                const vehicle_model   = document.getElementById('reg-vehicle').value.trim();
+                const registration_no = document.getElementById('reg-regno').value.trim();
+                const vehicle_type_id = document.getElementById('reg-vtype').value;
+                data = await API.auth.registerDriver({
+                    name, phone, email, license_no, vehicle_model,
+                    registration_no, vehicle_type_id, password
+                });
+            }
             showAlert(data.message + ' Redirecting to login…', 'success');
             setTimeout(() => window.location.href = '/login.html', 1500);
+
         } catch (err) {
             showAlert(err.message, 'error');
-            btn.textContent = '🚀 Register as Passenger';
-            btn.disabled = false;
-        }
-    }
-
-    async function registerDriver(e) {
-        e.preventDefault();
-        const name            = document.getElementById('d-name').value.trim();
-        const phone           = document.getElementById('d-phone').value.trim();
-        const email           = document.getElementById('d-email').value.trim();
-        const license_no      = document.getElementById('d-license').value.trim();
-        const vehicle_model   = document.getElementById('d-vehicle').value.trim();
-        const registration_no = document.getElementById('d-regno').value.trim();
-        const vehicle_type_id = document.getElementById('d-type').value;
-        const password        = document.getElementById('d-password').value;
-        const confirm         = document.getElementById('d-confirm').value;
-        const btn             = document.getElementById('d-btn');
-
-        if (password !== confirm)
-            return showAlert('Passwords do not match!', 'error');
-
-        btn.textContent = 'Registering…';
-        btn.disabled = true;
-
-        try {
-            const data = await API.auth.registerDriver({
-                name, phone, email, license_no, vehicle_model,
-                registration_no, vehicle_type_id, password
-            });
-            showAlert(data.message + ' Redirecting to login…', 'success');
-            setTimeout(() => window.location.href = '/login.html', 1500);
-        } catch (err) {
-            showAlert(err.message, 'error');
-            btn.textContent = '🚖 Register as Driver';
+            btn.textContent = type === 'driver' ? 'Register as Driver' : 'Create Account';
             btn.disabled = false;
         }
     }

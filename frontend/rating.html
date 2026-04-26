@@ -8,22 +8,50 @@
 </head>
 <body>
 
-<nav>
-    <a class="nav-brand" href="index.html">🚗 Ride<span>Share</span></a>
-    <ul class="nav-links">
-        <li><a href="passenger_dashboard.html">Dashboard</a></li>
-        <li><a href="trip_history.html">📋 Trips</a></li>
-        <li><a href="rating.html" class="active">⭐ Rate</a></li>
-    </ul>
-    <div class="nav-user">
-        <span id="nav-user-name"></span>
-        <button onclick="logout()" class="btn btn-accent btn-sm">Logout</button>
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <h2>RideShare</h2>
+        <p id="nav-user-name"></p>
     </div>
-</nav>
+    <nav class="sidebar-nav">
+        <a href="passenger_dashboard.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Dashboard
+        </a>
+        <a href="request_ride.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Book Ride
+        </a>
+        <a href="trip_history.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Trip History
+        </a>
+        <a href="payment.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Payments
+        </a>
+        <a href="rating.html" class="sidebar-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Rate Driver
+        </a>
+        <a href="support_ticket.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Support
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <button onclick="logout()" class="sidebar-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+        </button>
+    </div>
+</aside>
 
-<div class="container">
-    <div class="page-title">⭐ Rate Your Driver</div>
-    <div class="page-subtitle">Your feedback helps improve the service for everyone.</div>
+<main class="main-content">
+    <div class="main-header">
+        <h1>Rate Your Driver</h1>
+        <p>Your feedback helps improve the service for everyone.</p>
+    </div>
 
     <div id="alert-box" class="alert"></div>
 
@@ -31,34 +59,31 @@
 
         <!-- Rating Form -->
         <div class="card" id="rating-card">
-            <div class="card-title">🌟 Submit Rating</div>
+            <div class="card-title">Submit Rating</div>
 
             <form id="rating-form" onsubmit="submitRating(event)">
 
                 <div class="form-group">
-                    <label>Trip ID *</label>
+                    <label>Trip ID</label>
                     <div class="flex gap-8">
-                        <input type="number" id="trip-id" placeholder="Enter Trip ID" min="1" required>
-                        <button type="button" onclick="loadTripInfo()" class="btn btn-info btn-sm">Load</button>
+                        <input type="number" id="trip-id" class="no-icon" placeholder="Enter Trip ID" min="1" required>
+                        <button type="button" onclick="loadTripInfo()" class="btn btn-outline btn-sm">Load</button>
                     </div>
                 </div>
 
-                <!-- Trip info display -->
-                <div id="trip-info" class="hidden" style="background:var(--light);padding:14px;border-radius:8px;margin-bottom:16px;">
-                    <div class="flex-between mb-8">
-                        <span class="text-muted">Driver</span>
-                        <strong id="driver-name">—</strong>
+                <div id="trip-info" class="hidden" style="background:#f8fafc;padding:14px;border-radius:8px;margin-bottom:16px;border:1px solid var(--border);">
+                    <div class="kv-row">
+                        <span class="kv-label">Driver</span>
+                        <strong id="driver-name" class="kv-value">—</strong>
                     </div>
-                    <div class="flex-between">
-                        <span class="text-muted">Trip Date</span>
-                        <span id="trip-date">—</span>
+                    <div class="kv-row" style="border-bottom:none;margin-bottom:0;padding-bottom:0">
+                        <span class="kv-label">Trip Date</span>
+                        <span id="trip-date" class="kv-value">—</span>
                     </div>
                 </div>
 
-                <!-- Hidden fields -->
                 <input type="hidden" id="driver-id">
 
-                <!-- Driver Rating -->
                 <div class="form-group">
                     <label>Rate the Driver</label>
                     <div class="star-rating" id="driver-stars">
@@ -68,10 +93,9 @@
                         <input type="radio" name="driver-rating" id="dr2" value="2"><label for="dr2">★</label>
                         <input type="radio" name="driver-rating" id="dr1" value="1"><label for="dr1">★</label>
                     </div>
-                    <div class="text-muted mt-8" style="font-size:0.82rem">1 = Poor, 5 = Excellent</div>
+                    <div class="text-muted mt-8" style="font-size:.82rem">1 = Poor, 5 = Excellent</div>
                 </div>
 
-                <!-- Passenger self-rating (how well they behaved) -->
                 <div class="form-group">
                     <label>Your Self Rating (as a passenger)</label>
                     <div class="star-rating" id="passenger-stars">
@@ -88,45 +112,45 @@
                     <textarea id="comments" placeholder="Share your experience…" rows="3"></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-warning btn-block" id="rate-btn">
-                    ⭐ Submit Rating
+                <button type="submit" class="btn btn-primary btn-block" id="rate-btn">
+                    Submit Rating
                 </button>
             </form>
         </div>
 
-        <!-- Success + Info -->
+        <!-- Right panel -->
         <div>
-            <div id="success-card" class="card hidden" style="border-left:4px solid var(--warning)">
-                <div class="card-title">🎉 Rating Submitted!</div>
-                <div style="text-align:center;padding:20px 0;">
+            <div id="success-card" class="card hidden" style="border-left:4px solid var(--success)">
+                <div class="card-title text-success">Rating Submitted!</div>
+                <div style="text-align:center;padding:24px 0;">
                     <div style="font-size:3rem">⭐</div>
                     <p class="mt-8">Thank you for your feedback! Your rating has been recorded.</p>
                 </div>
                 <div class="flex gap-12 mt-8" style="justify-content:center">
-                    <a href="trip_history.html"        class="btn btn-primary">View Trips</a>
-                    <a href="passenger_dashboard.html" class="btn btn-light">Dashboard</a>
+                    <a href="trip_history.html" class="btn btn-primary">View Trips</a>
+                    <a href="passenger_dashboard.html" class="btn btn-outline">Dashboard</a>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-title">📖 Rating Guide</div>
+                <div class="card-title">Rating Guide</div>
                 <table>
                     <thead>
                         <tr><th>Stars</th><th>Meaning</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td>⭐⭐⭐⭐⭐</td><td>Excellent</td></tr>
-                        <tr><td>⭐⭐⭐⭐</td><td>Good</td></tr>
-                        <tr><td>⭐⭐⭐</td><td>Average</td></tr>
-                        <tr><td>⭐⭐</td><td>Below Average</td></tr>
-                        <tr><td>⭐</td><td>Poor</td></tr>
+                        <tr><td>★★★★★</td><td>Excellent</td></tr>
+                        <tr><td>★★★★</td><td>Good</td></tr>
+                        <tr><td>★★★</td><td>Average</td></tr>
+                        <tr><td>★★</td><td>Below Average</td></tr>
+                        <tr><td>★</td><td>Poor</td></tr>
                     </tbody>
                 </table>
             </div>
 
-            <div class="card" style="border-left:4px solid var(--info)">
-                <div class="card-title">🔔 Trigger Info</div>
-                <p class="text-muted" style="font-size:0.85rem">
+            <div class="card" style="border-left:4px solid var(--primary)">
+                <div class="card-title">Trigger Info</div>
+                <p class="text-muted" style="font-size:.85rem">
                     The MySQL trigger <code>trg_check_rating</code> validates your
                     rating before inserting. If you try to submit a rating outside
                     1–5, the database rejects it automatically.
@@ -134,11 +158,7 @@
             </div>
         </div>
     </div>
-</div>
-
-<footer>
-    <strong>RideShare</strong> · 21CSC205P DBMS Mini Project
-</footer>
+</main>
 
 <script src="js/api.js"></script>
 <script>
@@ -146,9 +166,8 @@
     if (user) {
         populateNav(user);
 
-        // Pre-fill from URL
-        const params  = new URLSearchParams(window.location.search);
-        const tripId  = params.get('trip');
+        const params   = new URLSearchParams(window.location.search);
+        const tripId   = params.get('trip');
         const driverId = params.get('driver_id');
 
         if (tripId) {
@@ -170,6 +189,22 @@
             document.getElementById('trip-date').textContent   = formatDate(trip.Start_Time);
             document.getElementById('driver-id').value         = trip.Driver_ID || '';
             document.getElementById('trip-info').classList.remove('hidden');
+
+            // Check if already rated
+            try {
+                const ratings = await API.ratings.trip(tripId);
+                if (ratings.length > 0) {
+                    document.getElementById('rating-card').innerHTML = `
+                        <div class="card-title">Already Rated</div>
+                        <div class="alert alert-success" style="margin-bottom:16px">
+                            You have already submitted a rating for trip #${tripId}.
+                        </div>
+                        <div class="flex gap-12">
+                            <a href="trip_history.html" class="btn btn-primary">View Trips</a>
+                            <a href="passenger_dashboard.html" class="btn btn-outline">Dashboard</a>
+                        </div>`;
+                }
+            } catch (_) {}
         } catch (err) {
             showAlert('Trip not found: ' + err.message, 'error');
         }
@@ -177,16 +212,16 @@
 
     async function submitRating(e) {
         e.preventDefault();
-        const tripId   = document.getElementById('trip-id').value;
-        const driverId = document.getElementById('driver-id').value;
+        const tripId          = document.getElementById('trip-id').value;
+        const driverId        = document.getElementById('driver-id').value;
         const driverRating    = document.querySelector('input[name="driver-rating"]:checked')?.value;
         const passengerRating = document.querySelector('input[name="passenger-rating"]:checked')?.value;
-        const comments = document.getElementById('comments').value.trim();
-        const btn      = document.getElementById('rate-btn');
+        const comments        = document.getElementById('comments').value.trim();
+        const btn             = document.getElementById('rate-btn');
 
-        if (!tripId)        return showAlert('Please enter a Trip ID', 'error');
-        if (!driverId)      return showAlert('Please load the trip first using the Load button', 'error');
-        if (!driverRating)  return showAlert('Please select a driver rating', 'error');
+        if (!tripId)       return showAlert('Please enter a Trip ID', 'error');
+        if (!driverId)     return showAlert('Please load the trip first using the Load button', 'error');
+        if (!driverRating) return showAlert('Please select a driver rating', 'error');
 
         btn.textContent = 'Submitting…';
         btn.disabled = true;
@@ -206,7 +241,7 @@
 
         } catch (err) {
             showAlert(err.message, 'error');
-            btn.textContent = '⭐ Submit Rating';
+            btn.textContent = 'Submit Rating';
             btn.disabled = false;
         }
     }
