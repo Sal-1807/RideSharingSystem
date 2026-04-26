@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(cmd /c \"dir C:\\\\Users\\\\Sal\\\\RideSharingSystem 2>&1\")",
-      "Bash(cmd /c \"mkdir C:\\\\Users\\\\Sal\\\\RideSharingSystem\\\\backend\\\\config && mkdir C:\\\\Users\\\\Sal\\\\RideSharingSystem\\\\backend\\\\routes && mkdir C:\\\\Users\\\\Sal\\\\RideSharingSystem\\\\backend\\\\sql && mkdir C:\\\\Users\\\\Sal\\\\RideSharingSystem\\\\frontend\\\\css && mkdir C:\\\\Users\\\\Sal\\\\RideSharingSystem\\\\frontend\\\\js 2>&1\")"
-    ]
-  }
-}
