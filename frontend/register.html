@@ -76,10 +76,7 @@
                 <div class="form-group">
                     <label>Vehicle Type</label>
                     <select id="reg-vtype" class="no-icon">
-                        <option value="1">Sedan</option>
-                        <option value="2">SUV</option>
-                        <option value="3">Mini</option>
-                        <option value="4">Auto</option>
+                        <option value="">Loading…</option>
                     </select>
                 </div>
             </div>
@@ -115,6 +112,17 @@
 <script src="js/api.js"></script>
 <script>
     redirectIfLoggedIn();
+    loadVehicleTypes();
+
+    async function loadVehicleTypes() {
+        try {
+            const types = await API.locations.vehicleTypes();
+            const select = document.getElementById('reg-vtype');
+            select.innerHTML = types.map(t =>
+                `<option value="${t.Vehicle_Type_ID}">${t.Type_Name} — ₹${t.Price_Per_KM}/km (min ₹${t.Min_Fare})</option>`
+            ).join('');
+        } catch (_) {}
+    }
 
     function toggleDriverFields() {
         const type = document.getElementById('reg-type').value;

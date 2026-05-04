@@ -48,7 +48,7 @@ const API = {
     // ── Driver helpers ────────────────────────────────────────
     driver: {
         profile:      (id) => API.get(`/driver/profile/${id}`),
-        pendingRides: ()   => API.get('/driver/pending-rides'),
+        pendingRides: (id) => API.get(`/driver/pending-rides?driver_id=${id}`),
         trips:        (id) => API.get(`/driver/trips/${id}`),
         ratings:      (id) => API.get(`/driver/ratings/${id}`),
         earnings:     (id) => API.get(`/driver/earnings/${id}`),

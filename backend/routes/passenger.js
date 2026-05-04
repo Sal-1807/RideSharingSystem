@@ -42,7 +42,7 @@ router.post('/ride-request', async (req, res) => {
         passenger_id,
         pickup_address, pickup_city, pickup_pincode,
         drop_address,   drop_city,   drop_pincode,
-        promo_code
+        promo_code,     vehicle_type_id
     } = req.body;
 
     if (!passenger_id || !pickup_address || !drop_address)
@@ -77,9 +77,9 @@ router.post('/ride-request', async (req, res) => {
         // Create ride request
         const [reqResult] = await db.execute(
             `INSERT INTO Ride_Request
-             (Passenger_ID, Pickup_Location_ID, Drop_Location_ID, Request_Time, Status)
-             VALUES (?, ?, ?, NOW(), 'Pending')`,
-            [passenger_id, pickupResult.insertId, dropResult.insertId]
+             (Passenger_ID, Pickup_Location_ID, Drop_Location_ID, Request_Time, Status, Vehicle_Type_ID)
+             VALUES (?, ?, ?, NOW(), 'Pending', ?)`,
+            [passenger_id, pickupResult.insertId, dropResult.insertId, vehicle_type_id || 1]
         );
 
         res.json({
@@ -133,17 +133,21 @@ router.get('/trips/:passengerId', async (req, res) => {
                 t.Fare,
                 t.Status,
                 t.Driver_ID,
-                d.Name       AS Driver_Name,
-                d.Phone      AS Driver_Phone,
-                pl.Address   AS Pickup_Address,
-                dl.Address   AS Drop_Address,
+                d.Name        AS Driver_Name,
+                d.Phone       AS Driver_Phone,
+                pl.Address    AS Pickup_Address,
+                dl.Address    AS Drop_Address,
+                vt.Type_Name  AS Vehicle_Type,
+                vt.Price_Per_KM,
                 (SELECT COUNT(*) FROM Payment py WHERE py.Trip_ID = t.Trip_ID) AS Has_Paid,
                 (SELECT COUNT(*) FROM Rating_Review r WHERE r.Trip_ID = t.Trip_ID AND r.Passenger_ID = rr.Passenger_ID) AS Has_Rated
              FROM Trip t
-             JOIN Ride_Request rr ON t.Request_ID = rr.Request_ID
-             JOIN Driver       d  ON t.Driver_ID  = d.Driver_ID
+             JOIN Ride_Request rr ON t.Request_ID          = rr.Request_ID
+             JOIN Driver       d  ON t.Driver_ID           = d.Driver_ID
              JOIN Location     pl ON rr.Pickup_Location_ID = pl.Location_ID
              JOIN Location     dl ON rr.Drop_Location_ID   = dl.Location_ID
+             JOIN Vehicle      v  ON t.Vehicle_ID          = v.Vehicle_ID
+             JOIN Vehicle_Type vt ON v.Vehicle_Type_ID     = vt.Vehicle_Type_ID
              WHERE rr.Passenger_ID = ?
              ORDER BY t.Start_Time DESC`,
             [req.params.passengerId]

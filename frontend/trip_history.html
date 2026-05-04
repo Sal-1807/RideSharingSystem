@@ -148,6 +148,7 @@
                         <th>Trip #</th>
                         <th>From → To</th>
                         <th>Driver</th>
+                        <th>Vehicle</th>
                         <th>Distance</th>
                         <th>Fare</th>
                         <th>Date</th>
@@ -164,6 +165,7 @@
                                 <span style="color:var(--danger)">●</span> ${t.Drop_Address}
                             </td>
                             <td>${t.Driver_Name}<br><small class="text-muted">${t.Driver_Phone}</small></td>
+                            <td><span class="badge badge-info">${t.Vehicle_Type || '—'}</span><br><small class="text-muted">₹${t.Price_Per_KM}/km</small></td>
                             <td>${t.Distance ? t.Distance + ' km' : '—'}</td>
                             <td><strong>${t.Fare ? '₹' + t.Fare : '—'}</strong></td>
                             <td style="font-size:.82rem">${formatDate(t.Start_Time)}</td>

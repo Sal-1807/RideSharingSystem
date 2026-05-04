@@ -99,6 +99,14 @@
                     </div>
                 </div>
 
+                <div style="background:#f8fafc;padding:16px;border-radius:8px;margin-bottom:16px;border:1px solid var(--border);">
+                    <div style="font-weight:700;color:var(--primary);margin-bottom:12px;font-size:.85rem;text-transform:uppercase;letter-spacing:.4px;">Vehicle Type</div>
+                    <div id="vtype-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                    <div id="vtype-error" style="display:none;color:var(--danger);font-size:.82rem;margin-top:8px">Please select a vehicle type.</div>
+                </div>
+
                 <div class="form-group">
                     <label>Promo Code (optional)</label>
                     <div class="flex gap-8">
@@ -163,10 +171,39 @@
 <script src="js/api.js"></script>
 <script>
     const user = requireAuth(['passenger']);
+    let selectedVehicleTypeId = null;
+
     if (user) {
         populateNav(user);
         loadPromos();
         loadWallet();
+        loadVehicleTypes();
+    }
+
+    async function loadVehicleTypes() {
+        try {
+            const types = await API.locations.vehicleTypes();
+            const grid = document.getElementById('vtype-grid');
+            grid.innerHTML = types.map(t => `
+                <div id="vtype-${t.Vehicle_Type_ID}"
+                     onclick="selectVtype(${t.Vehicle_Type_ID})"
+                     style="padding:12px;border:2px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s">
+                    <div style="font-weight:700;font-size:.95rem">${t.Type_Name}</div>
+                    <div style="color:var(--primary);font-size:.85rem;margin-top:4px">₹${t.Price_Per_KM}/km</div>
+                    <div style="color:#94a3b8;font-size:.78rem">min ₹${t.Min_Fare}</div>
+                </div>`).join('');
+            if (types.length) selectVtype(types[0].Vehicle_Type_ID);
+        } catch (_) {}
+    }
+
+    function selectVtype(id) {
+        selectedVehicleTypeId = id;
+        document.getElementById('vtype-error').style.display = 'none';
+        document.querySelectorAll('#vtype-grid > div').forEach(el => {
+            const active = el.id === `vtype-${id}`;
+            el.style.borderColor = active ? 'var(--primary)' : 'var(--border)';
+            el.style.background  = active ? '#eff6ff' : '#fff';
+        });
     }
 
     async function loadPromos() {
@@ -214,20 +251,25 @@
 
     async function requestRide(e) {
         e.preventDefault();
+        if (!selectedVehicleTypeId) {
+            document.getElementById('vtype-error').style.display = 'block';
+            return;
+        }
         const btn = document.getElementById('submit-btn');
         btn.textContent = 'Submitting…';
         btn.disabled = true;
 
         try {
             const data = await API.passenger.requestRide({
-                passenger_id:   user.id,
-                pickup_address: document.getElementById('pickup-address').value.trim(),
-                pickup_city:    document.getElementById('pickup-city').value.trim(),
-                pickup_pincode: document.getElementById('pickup-pincode').value.trim(),
-                drop_address:   document.getElementById('drop-address').value.trim(),
-                drop_city:      document.getElementById('drop-city').value.trim(),
-                drop_pincode:   document.getElementById('drop-pincode').value.trim(),
-                promo_code:     document.getElementById('promo-code').value.trim()
+                passenger_id:    user.id,
+                pickup_address:  document.getElementById('pickup-address').value.trim(),
+                pickup_city:     document.getElementById('pickup-city').value.trim(),
+                pickup_pincode:  document.getElementById('pickup-pincode').value.trim(),
+                drop_address:    document.getElementById('drop-address').value.trim(),
+                drop_city:       document.getElementById('drop-city').value.trim(),
+                drop_pincode:    document.getElementById('drop-pincode').value.trim(),
+                promo_code:      document.getElementById('promo-code').value.trim(),
+                vehicle_type_id: selectedVehicleTypeId
             });
             document.getElementById('req-id').textContent = data.request_id;
             document.getElementById('ride-form').classList.add('hidden');

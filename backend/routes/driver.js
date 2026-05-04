@@ -24,8 +24,9 @@ router.get('/profile/:id', async (req, res) => {
 });
 
 // ── GET /api/driver/pending-rides ────────────────────────────
-// Returns all Pending ride requests that haven't been assigned yet
+// Returns Pending ride requests matching the driver's vehicle type
 router.get('/pending-rides', async (req, res) => {
+    const { driver_id } = req.query;
     try {
         const [rows] = await db.execute(
             `SELECT
@@ -37,13 +38,20 @@ router.get('/pending-rides', async (req, res) => {
                 pl.Address  AS Pickup_Address,
                 pl.City     AS Pickup_City,
                 dl.Address  AS Drop_Address,
-                dl.City     AS Drop_City
+                dl.City     AS Drop_City,
+                vt.Type_Name   AS Requested_Vehicle_Type,
+                vt.Price_Per_KM
              FROM Ride_Request rr
-             JOIN Passenger p  ON rr.Passenger_ID       = p.Passenger_ID
-             JOIN Location  pl ON rr.Pickup_Location_ID = pl.Location_ID
-             JOIN Location  dl ON rr.Drop_Location_ID   = dl.Location_ID
+             JOIN Passenger    p  ON rr.Passenger_ID       = p.Passenger_ID
+             JOIN Location     pl ON rr.Pickup_Location_ID = pl.Location_ID
+             JOIN Location     dl ON rr.Drop_Location_ID   = dl.Location_ID
+             JOIN Vehicle_Type vt ON rr.Vehicle_Type_ID    = vt.Vehicle_Type_ID
              WHERE rr.Status = 'Pending'
-             ORDER BY rr.Request_Time ASC`
+               AND (? IS NULL OR rr.Vehicle_Type_ID = (
+                 SELECT v.Vehicle_Type_ID FROM Vehicle v WHERE v.Driver_ID = ? LIMIT 1
+               ))
+             ORDER BY rr.Request_Time ASC`,
+            [driver_id || null, driver_id || null]
         );
         res.json(rows);
     } catch (err) {
@@ -127,15 +135,22 @@ router.post('/start-trip/:tripId', async (req, res) => {
 router.post('/end-trip/:tripId', async (req, res) => {
     const { distance } = req.body;
     const dist = parseFloat(distance) || 5.0;
-    const fare = Math.max(50, dist * 15).toFixed(2);  // ₹15/km, minimum ₹50
 
     try {
         const [tripRows] = await db.execute(
-            'SELECT Driver_ID FROM Trip WHERE Trip_ID = ?',
+            `SELECT t.Driver_ID, vt.Price_Per_KM, vt.Min_Fare
+             FROM Trip t
+             JOIN Vehicle      v  ON t.Vehicle_ID      = v.Vehicle_ID
+             JOIN Vehicle_Type vt ON v.Vehicle_Type_ID = vt.Vehicle_Type_ID
+             WHERE t.Trip_ID = ?`,
             [req.params.tripId]
         );
         if (tripRows.length === 0)
             return res.status(404).json({ error: 'Trip not found' });
+
+        const rate    = parseFloat(tripRows[0].Price_Per_KM) || 15.00;
+        const minFare = parseFloat(tripRows[0].Min_Fare)     || 50.00;
+        const fare    = Math.max(minFare, dist * rate).toFixed(2);
 
         await db.execute(
             `UPDATE Trip
@@ -189,15 +204,19 @@ router.get('/trips/:driverId', async (req, res) => {
                 t.Distance,
                 t.Fare,
                 t.Status,
-                p.Name     AS Passenger_Name,
-                p.Phone    AS Passenger_Phone,
-                pl.Address AS Pickup_Address,
-                dl.Address AS Drop_Address
+                p.Name      AS Passenger_Name,
+                p.Phone     AS Passenger_Phone,
+                pl.Address  AS Pickup_Address,
+                dl.Address  AS Drop_Address,
+                vt.Type_Name AS Vehicle_Type,
+                vt.Price_Per_KM
              FROM Trip t
-             JOIN Ride_Request rr ON t.Request_ID = rr.Request_ID
-             JOIN Passenger    p  ON rr.Passenger_ID = p.Passenger_ID
+             JOIN Ride_Request rr ON t.Request_ID        = rr.Request_ID
+             JOIN Passenger    p  ON rr.Passenger_ID     = p.Passenger_ID
              JOIN Location     pl ON rr.Pickup_Location_ID = pl.Location_ID
              JOIN Location     dl ON rr.Drop_Location_ID   = dl.Location_ID
+             JOIN Vehicle      v  ON t.Vehicle_ID        = v.Vehicle_ID
+             JOIN Vehicle_Type vt ON v.Vehicle_Type_ID   = vt.Vehicle_Type_ID
              WHERE t.Driver_ID = ?
              ORDER BY t.Start_Time DESC`,
             [req.params.driverId]
