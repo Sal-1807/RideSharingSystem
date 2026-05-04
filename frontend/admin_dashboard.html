@@ -511,7 +511,7 @@
                     <strong style="font-size:.85rem;display:block;margin-bottom:10px;color:var(--muted)">TRIPS PER DRIVER</strong>
                     ${(s.driver_trips || []).map(d => `
                         <div class="flex-between mb-8" style="font-size:.875rem">
-                            <span>${d.Driver_Name}</span><strong>${d.Trip_Count} trips</strong>
+                            <span>${d.Driver_Name}</span><strong>${d.Total_Trips} trips</strong>
                         </div>`).join('') || '<p class="text-muted">No data.</p>'}
                 </div>`;
         } catch (err) { container.innerHTML = `<p class="text-muted">Error: ${err.message}</p>`; }
