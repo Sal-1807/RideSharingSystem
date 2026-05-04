@@ -43,6 +43,7 @@ const API = {
         tickets:      (id) => API.get(`/passenger/tickets/${id}`),
         promos:       ()   => API.get('/passenger/promos'),
         requestRide:  (b)  => API.post('/passenger/ride-request', b),
+        topup:        (b)  => API.post('/passenger/wallet/topup', b),
     },
 
     // ── Driver helpers ────────────────────────────────────────

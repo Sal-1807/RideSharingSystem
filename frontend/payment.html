@@ -49,11 +49,39 @@
 
 <main class="main-content">
     <div class="main-header">
-        <h1>Payment</h1>
-        <p>Complete your payment for the trip.</p>
+        <h1>Payments</h1>
+        <p>Top up your wallet or pay for a trip.</p>
     </div>
 
     <div id="alert-box" class="alert"></div>
+
+    <!-- Wallet Top Up -->
+    <div class="card" style="margin-bottom:24px;border-left:4px solid var(--primary)">
+        <div class="card-header">
+            <div class="card-title" style="margin-bottom:0">Top Up Wallet</div>
+            <span style="color:var(--text-muted);font-size:.85rem">Current balance: <strong id="topup-balance" style="color:var(--primary)">₹—</strong></span>
+        </div>
+        <div id="topup-section">
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+                <button onclick="setTopupAmount(100)"  class="btn btn-outline btn-sm">+ ₹100</button>
+                <button onclick="setTopupAmount(200)"  class="btn btn-outline btn-sm">+ ₹200</button>
+                <button onclick="setTopupAmount(500)"  class="btn btn-outline btn-sm">+ ₹500</button>
+                <button onclick="setTopupAmount(1000)" class="btn btn-outline btn-sm">+ ₹1000</button>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-end;margin-top:12px;">
+                <div class="form-group" style="flex:1;margin-bottom:0">
+                    <label>Custom Amount (₹)</label>
+                    <input type="number" id="topup-amount" class="no-icon" placeholder="Enter amount" min="1" step="1">
+                </div>
+                <button onclick="doTopup()" class="btn btn-primary" id="topup-btn">Add to Wallet</button>
+            </div>
+        </div>
+        <div id="topup-success" class="hidden" style="margin-top:12px">
+            <div class="alert alert-success" style="margin:0">
+                Wallet topped up! New balance: <strong id="topup-new-balance">₹—</strong>
+            </div>
+        </div>
+    </div>
 
     <div class="grid-2">
 
@@ -220,8 +248,39 @@
         try {
             const w = await API.passenger.wallet(user.id);
             walletBalance = parseFloat(w.Balance);
-            document.getElementById('disp-wallet').textContent = '₹' + walletBalance.toFixed(2);
+            document.getElementById('disp-wallet').textContent  = '₹' + walletBalance.toFixed(2);
+            document.getElementById('topup-balance').textContent = '₹' + walletBalance.toFixed(2);
         } catch (_) {}
+    }
+
+    function setTopupAmount(amt) {
+        document.getElementById('topup-amount').value = amt;
+    }
+
+    async function doTopup() {
+        const amount = parseFloat(document.getElementById('topup-amount').value);
+        if (!amount || amount <= 0) return showAlert('Enter a valid amount', 'error');
+
+        const btn = document.getElementById('topup-btn');
+        btn.textContent = 'Processing…';
+        btn.disabled = true;
+
+        try {
+            const data = await API.passenger.topup({ passenger_id: user.id, amount });
+            document.getElementById('topup-new-balance').textContent = '₹' + data.new_balance;
+            document.getElementById('topup-success').classList.remove('hidden');
+            document.getElementById('topup-amount').value = '';
+            // Sync both balance displays
+            walletBalance = parseFloat(data.new_balance);
+            document.getElementById('disp-wallet').textContent  = '₹' + data.new_balance;
+            document.getElementById('topup-balance').textContent = '₹' + data.new_balance;
+            setTimeout(() => document.getElementById('topup-success').classList.add('hidden'), 4000);
+        } catch (err) {
+            showAlert(err.message, 'error');
+        } finally {
+            btn.textContent = 'Add to Wallet';
+            btn.disabled = false;
+        }
     }
 
     async function loadTripDetails() {
