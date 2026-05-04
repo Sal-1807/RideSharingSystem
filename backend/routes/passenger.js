@@ -159,6 +159,35 @@ router.get('/trips/:passengerId', async (req, res) => {
     }
 });
 
+// ── POST /api/passenger/wallet/topup ─────────────────────────
+router.post('/wallet/topup', async (req, res) => {
+    const { passenger_id, amount } = req.body;
+    if (!passenger_id || !amount || parseFloat(amount) <= 0)
+        return res.status(400).json({ error: 'Valid passenger_id and amount are required' });
+
+    try {
+        const [result] = await db.execute(
+            'UPDATE Wallet SET Balance = Balance + ? WHERE Passenger_ID = ?',
+            [parseFloat(amount), passenger_id]
+        );
+        if (result.affectedRows === 0)
+            return res.status(404).json({ error: 'Wallet not found' });
+
+        const [wallets] = await db.execute(
+            'SELECT Balance FROM Wallet WHERE Passenger_ID = ?',
+            [passenger_id]
+        );
+        res.json({
+            success:     true,
+            new_balance: parseFloat(wallets[0].Balance).toFixed(2),
+            message:     `₹${parseFloat(amount).toFixed(2)} added to your wallet!`
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Top-up failed' });
+    }
+});
+
 // ── GET /api/passenger/payment/:tripId ───────────────────────
 router.get('/payment/:tripId', async (req, res) => {
     try {
