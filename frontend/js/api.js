@@ -93,9 +93,10 @@ const API = {
 
     // ── Rating helpers ────────────────────────────────────────
     ratings: {
-        submit: (b)  => API.post('/ratings', b),
-        trip:   (id) => API.get(`/ratings/trip/${id}`),
-        driver: (id) => API.get(`/ratings/driver/${id}`),
+        submit:       (b)        => API.post('/ratings', b),
+        trip:         (id)       => API.get(`/ratings/trip/${id}`),
+        driver:       (id)       => API.get(`/ratings/driver/${id}`),
+        ratePassenger:(tripId,b) => API.patch(`/ratings/trip/${tripId}/passenger`, b),
     },
 
     // ── Support helpers ───────────────────────────────────────

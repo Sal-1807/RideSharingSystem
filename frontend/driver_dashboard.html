@@ -261,7 +261,7 @@
             }
             container.innerHTML = `
                 <table>
-                    <thead><tr><th>#</th><th>Passenger</th><th>Route</th><th>Vehicle</th><th>Fare</th><th>Status</th></tr></thead>
+                    <thead><tr><th>#</th><th>Passenger</th><th>Route</th><th>Vehicle</th><th>Fare</th><th>Status</th><th>Rate Passenger</th></tr></thead>
                     <tbody>
                         ${trips.map(t => `
                             <tr>
@@ -271,10 +271,45 @@
                                 <td><span class="badge badge-info">${t.Vehicle_Type || '—'}</span><br><small class="text-muted">₹${t.Price_Per_KM}/km</small></td>
                                 <td>${t.Fare ? '₹' + t.Fare : '—'}</td>
                                 <td>${statusBadge(t.Status)}</td>
+                                <td id="pr-cell-${t.Trip_ID}">
+                                    ${t.Status === 'Completed'
+                                        ? t.Passenger_Rating != null
+                                            ? `<span style="font-size:.85rem;color:var(--warning)">${'★'.repeat(t.Passenger_Rating)}</span>`
+                                            : `<button onclick="showRatePassenger(${t.Trip_ID})" class="btn btn-outline btn-sm">Rate</button>`
+                                        : '<span class="text-muted" style="font-size:.82rem">—</span>'}
+                                </td>
                             </tr>`).join('')}
                     </tbody>
                 </table>`;
         } catch (err) { console.error(err); }
+    }
+
+    function showRatePassenger(tripId) {
+        const cell = document.getElementById('pr-cell-' + tripId);
+        cell.innerHTML = `
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                <select id="pr-sel-${tripId}" style="padding:4px 6px;border:1px solid var(--border);border-radius:6px;background:var(--bg-card);color:var(--text);font-size:.85rem">
+                    <option value="5">5 ★</option>
+                    <option value="4">4 ★</option>
+                    <option value="3" selected>3 ★</option>
+                    <option value="2">2 ★</option>
+                    <option value="1">1 ★</option>
+                </select>
+                <button onclick="submitPassengerRating(${tripId})" class="btn btn-success btn-sm">✓</button>
+            </div>`;
+    }
+
+    async function submitPassengerRating(tripId) {
+        const rating = parseInt(document.getElementById('pr-sel-' + tripId).value);
+        const cell = document.getElementById('pr-cell-' + tripId);
+        try {
+            await API.ratings.ratePassenger(tripId, { driver_id: user.id, passenger_rating: rating });
+            cell.innerHTML = `<span style="font-size:.85rem;color:var(--warning)">${'★'.repeat(rating)}</span>`;
+            showAlert('Passenger rated successfully!', 'success');
+        } catch (err) {
+            showAlert(err.message, 'error');
+            cell.innerHTML = `<button onclick="showRatePassenger(${tripId})" class="btn btn-outline btn-sm">Rate</button>`;
+        }
     }
 
     async function loadRatings() {

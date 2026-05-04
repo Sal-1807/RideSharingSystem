@@ -97,17 +97,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Your Self Rating (as a passenger)</label>
-                    <div class="star-rating" id="passenger-stars">
-                        <input type="radio" name="passenger-rating" id="pr5" value="5"><label for="pr5">★</label>
-                        <input type="radio" name="passenger-rating" id="pr4" value="4"><label for="pr4">★</label>
-                        <input type="radio" name="passenger-rating" id="pr3" value="3" checked><label for="pr3">★</label>
-                        <input type="radio" name="passenger-rating" id="pr2" value="2"><label for="pr2">★</label>
-                        <input type="radio" name="passenger-rating" id="pr1" value="1"><label for="pr1">★</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
                     <label>Comments (optional)</label>
                     <textarea id="comments" placeholder="Share your experience…" rows="3"></textarea>
                 </div>
@@ -214,9 +203,8 @@
         e.preventDefault();
         const tripId          = document.getElementById('trip-id').value;
         const driverId        = document.getElementById('driver-id').value;
-        const driverRating    = document.querySelector('input[name="driver-rating"]:checked')?.value;
-        const passengerRating = document.querySelector('input[name="passenger-rating"]:checked')?.value;
-        const comments        = document.getElementById('comments').value.trim();
+        const driverRating = document.querySelector('input[name="driver-rating"]:checked')?.value;
+        const comments     = document.getElementById('comments').value.trim();
         const btn             = document.getElementById('rate-btn');
 
         if (!tripId)       return showAlert('Please enter a Trip ID', 'error');
@@ -228,11 +216,10 @@
 
         try {
             await API.ratings.submit({
-                trip_id:          tripId,
-                passenger_id:     user.id,
-                driver_id:        driverId,
-                driver_rating:    parseInt(driverRating),
-                passenger_rating: parseInt(passengerRating || 3),
+                trip_id:       tripId,
+                passenger_id:  user.id,
+                driver_id:     driverId,
+                driver_rating: parseInt(driverRating),
                 comments
             });
 

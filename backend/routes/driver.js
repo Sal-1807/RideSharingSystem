@@ -209,14 +209,17 @@ router.get('/trips/:driverId', async (req, res) => {
                 pl.Address  AS Pickup_Address,
                 dl.Address  AS Drop_Address,
                 vt.Type_Name AS Vehicle_Type,
-                vt.Price_Per_KM
+                vt.Price_Per_KM,
+                rat.Rating_ID,
+                rat.Passenger_Rating
              FROM Trip t
-             JOIN Ride_Request rr ON t.Request_ID        = rr.Request_ID
-             JOIN Passenger    p  ON rr.Passenger_ID     = p.Passenger_ID
+             JOIN Ride_Request rr ON t.Request_ID          = rr.Request_ID
+             JOIN Passenger    p  ON rr.Passenger_ID       = p.Passenger_ID
              JOIN Location     pl ON rr.Pickup_Location_ID = pl.Location_ID
              JOIN Location     dl ON rr.Drop_Location_ID   = dl.Location_ID
-             JOIN Vehicle      v  ON t.Vehicle_ID        = v.Vehicle_ID
-             JOIN Vehicle_Type vt ON v.Vehicle_Type_ID   = vt.Vehicle_Type_ID
+             JOIN Vehicle      v  ON t.Vehicle_ID          = v.Vehicle_ID
+             JOIN Vehicle_Type vt ON v.Vehicle_Type_ID     = vt.Vehicle_Type_ID
+             LEFT JOIN Rating_Review rat ON rat.Trip_ID    = t.Trip_ID
              WHERE t.Driver_ID = ?
              ORDER BY t.Start_Time DESC`,
             [req.params.driverId]
